@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한양사이버대 건축도시·디자인 학점/졸업 진단 시스템</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; font-size: 12pt; }
+            .print-container { shadow: none; border: none; padding: 0; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-12">
+
+    <!-- 상단 헤더 -->
+    <header class="bg-blue-900 text-white shadow-lg no-print">
+        <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fa-solid font-graduation-cap"></i> 한양사이버대학교 건축도시·디자인학부
+                </h1>
+                <p class="text-blue-200 text-sm mt-1">성적 산출 및 졸업 요건 자동 진단 로드맵</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetToDefault()" class="px-3 py-2 bg-blue-800 hover:bg-blue-700 rounded text-xs transition flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-right"></i> 초기화
+                </button>
+                <button onclick="window.print()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 rounded text-xs font-semibold transition flex items-center gap-1">
+                    <i class="fa-solid fa-file-pdf"></i> 리포트 인쇄/PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 print-container">
+        
+        <!-- 좌측: 설정 및 성적 입력 영역 -->
+        <section class="lg:col-span-7 space-y-6">
+            
+            <!-- 1. 학생 프로필 설정 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2 border-b pb-3">
+                    <i class="fa-solid fa-user-gear text-blue-600"></i> 1. 입학 및 학적 정보 설정
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">입학 구분</label>
+                        <select id="admissionType" onchange="updateProfile()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500">
+                            <option value="transfer_3" selected>3학년 편입학 (35학점 인정)</option>
+                            <option value="transfer_2">2학년 편입학 (70학점 인정)</option>
+                            <option value="freshman">신입학 (0학점 인정)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">입학년도</label>
+                        <input type="number" id="admissionYear" value="2026" onchange="updateProfile()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">주전공 트랙</label>
+                        <select id="majorTrack" onchange="calculateAll()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500">
+                            <option value="urban">건축도시 트랙</option>
+                            <option value="design" selected>건축디자인 트랙</option>
+                            <option value="double">건축도시 + 건축디자인 복수전공</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 교과목 이수 및 성적 입력 테이블 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex justify-between items-center mb-4 border-b pb-3">
+                    <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-book text-blue-600"></i> 2. 학기별 수강 및 성적 관리
+                    </h2>
+                    <button onclick="addCourseRow()" class="no-print text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-3 py-1.5 rounded-lg font-semibold transition">
+                        + 과목 추가
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-100 text-slate-700 uppercase">
+                            <tr>
+                                <th class="p-2 border-b">학기</th>
+                                <th class="p-2 border-b">과목명</th>
+                                <th class="p-2 border-b">구분</th>
+                                <th class="p-2 border-b text-center">학점</th>
+                                <th class="p-2 border-b text-center">백분율</th>
+                                <th class="p-2 border-b text-center">등급</th>
+                                <th class="p-2 border-b text-center no-print">삭제</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courseTableBody" class="divide-y divide-slate-100">
+                            <!-- JS dynamic insertion -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 우측: 실시간 대시보드 및 졸업 진단 -->
+        <section class="lg:col-span-5 space-y-6">
+            
+            <!-- GPA 요약 카운터 -->
+            <div class="bg-gradient-to-br from-blue-900 to-indigo-900 text-white rounded-xl p-6 shadow-md">
+                <h3 class="text-xs uppercase tracking-wider text-blue-200 font-semibold mb-4">현재 누적 학점 및 평점 (GPA)</h3>
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                        <span class="block text-2xl font-black text-white" id="statGpa">0.00</span>
+                        <span class="text-[10px] text-blue-200">평균 평점 (4.5 만점)</span>
+                    </div>
+                    <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                        <span class="block text-2xl font-black text-amber-300" id="statScore">0.0</span>
+                        <span class="text-[10px] text-blue-200">100점 환산 평균</span>
+                    </div>
+                    <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                        <span class="block text-2xl font-black text-emerald-300" id="statTotalCredits">0</span>
+                        <span class="text-[10px] text-blue-200">총 취득/예정 학점</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 조기졸업 및 졸업 가능 여부 판정 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-award text-amber-500"></i> 졸업 및 조기졸업 자격 진단
+                </h3>
+                <div id="graduationStatusBox" class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs space-y-2">
+                    <!-- Dynamic Status -->
+                </div>
+            </div>
+
+            <!-- 트랙별 졸업 요건 이수 현황 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2 border-b pb-2">
+                    <i class="fa-solid fa-chart-pie text-blue-600"></i> 졸업 기준 학점 충족도 (목표: 70학점)
+                </h3>
+                
+                <div class="space-y-4 text-xs">
+                    <div>
+                        <div class="flex justify-between font-semibold mb-1">
+                            <span>건축도시 트랙</span>
+                            <span id="urbanProgressText">0 / 35 학점</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                            <div id="urbanProgressBar" class="bg-blue-600 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between font-semibold mb-1">
+                            <span>건축디자인 트랙</span>
+                            <span id="designProgressText">0 / 36 학점</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                            <div id="designProgressBar" class="bg-indigo-600 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between font-semibold mb-1">
+                            <span>공통 과목</span>
+                            <span id="commonProgressText">0 / 21 학점</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                            <div id="commonProgressBar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between font-semibold mb-1">
+                            <span>전체 합계 (편입 인정 + 이수)</span>
+                            <span id="totalProgressText">0 / 70 학점</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                            <div id="totalProgressBar" class="bg-slate-800 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 학기별 수강학점 제한 검증 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> 학기별 수강 신청 규정 검토
+                </h3>
+                <ul id="semesterValidationList" class="space-y-1 text-xs text-slate-600">
+                    <!-- Dynamic evaluation -->
+                </ul>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // Grade Scale Mapping
+        const GRADE_SCALE = {
+            'A+': 4.5, 'A': 4.0, 'B+': 3.5, 'B': 3.0,
+            'C+': 2.5, 'C': 2.0, 'D+': 1.5, 'D': 1.0,
+            'F': 0.0, 'TBD': null, '-': null
+        };
+
+        // Preset Courses based on user's uploaded CSV
+        const DEFAULT_COURSES = [
+            { sem: '26-봄', gradeLvl: '2', name: '건축재료', track: '건축도시', credits: 3, score: 92.67, grade: 'A' },
+            { sem: '26-봄', gradeLvl: '3', name: '건축시공', track: '건축도시', credits: 3, score: 85.31, grade: 'B+' },
+            { sem: '26-봄', gradeLvl: '3', name: '건축디자인', track: '건축디자인', credits: 3, score: 95.00, grade: 'A+' },
+            { sem: '26-봄', gradeLvl: '3', name: '건축구조역학', track: '건축도시', credits: 3, score: 94.00, grade: 'A' },
+            { sem: '26-봄', gradeLvl: '4', name: 'BIM통합설계프로젝트1(PBL)', track: '건축도시', credits: 3, score: 98.80, grade: 'A+' },
+            { sem: '26-여름', gradeLvl: '1', name: '일러스트레이터실습', track: '건축디자인', credits: 3, score: 87.67, grade: 'B+' },
+            { sem: '26-여름', gradeLvl: '4', name: '도시주택경제론', track: '건축도시', credits: 3, score: 98.18, grade: 'A+' },
+            { sem: '26-여름', gradeLvl: '2', name: '공간디자인론', track: '건축디자인', credits: 3, score: 94.00, grade: 'A' },
+            { sem: '26-가을', gradeLvl: '3', name: '철근콘크리트구조설계', track: '공통', credits: 3, score: null, grade: 'TBD' },
+            { sem: '26-가을', gradeLvl: '3', name: '친환경건축기술', track: '공통', credits: 3, score: null, grade: 'TBD' },
+            { sem: '26-가을', gradeLvl: '4', name: '건축설계실무', track: '건축도시', credits: 3, score: null, grade: 'TBD' },
+            { sem: '26-가을', gradeLvl: '3', name: '건축디자인프로그래밍', track: '건축디자인', credits: 3, score: null, grade: 'TBD' },
+            { sem: '26-가을', gradeLvl: '3', name: '라이프스타일디자인', track: '건축디자인', credits: 3, score: null, grade: 'TBD' },
+            { sem: '26-가을', gradeLvl: '4', name: '건설계약및클레임', track: '건축도시', credits: 3, score: null, grade: 'TBD' },
+            { sem: '26-겨울', gradeLvl: '2', name: '건축도시방재', track: '건축도시', credits: 3, score: null, grade: 'TBD' },
+            { sem: '26-겨울', gradeLvl: '4', name: '넥스트시티', track: '건축도시', credits: 3, score: null, grade: 'TBD' },
+            { sem: '27-봄', gradeLvl: '4', name: '졸업프로젝트(졸업필수)', track: '건축도시', credits: 2, score: null, grade: 'TBD' },
+            { sem: '27-봄', gradeLvl: '4', name: '디자인졸업프로젝트(졸업필수)', track: '건축디자인', credits: 2, score: null, grade: 'TBD' },
+            { sem: '27-봄', gradeLvl: '2', name: '도시계획', track: '공통', credits: 3, score: null, grade: 'TBD' },
+            { sem: '27-봄', gradeLvl: '2', name: '건축구법', track: '공통', credits: 3, score: null, grade: 'TBD' }
+        ];
+
+        let courses = [];
+
+        function initApp() {
+            const saved = localStorage.getItem('hanyang_academic_data');
+            if (saved) {
+                try {
+                    courses = JSON.parse(saved);
+                } catch(e) {
+                    courses = [...DEFAULT_COURSES];
+                }
+            } else {
+                courses = [...DEFAULT_COURSES];
+            }
+            renderTable();
+            calculateAll();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('courseTableBody');
+            tbody.innerHTML = '';
+
+            courses.forEach((c, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="p-2"><input type="text" value="${c.sem}" onchange="updateCourse(${idx}, 'sem', this.value)" class="w-16 border rounded p-1 text-xs"></td>
+                    <td class="p-2"><input type="text" value="${c.name}" onchange="updateCourse(${idx}, 'name', this.value)" class="w-full border rounded p-1 text-xs font-medium"></td>
+                    <td class="p-2">
+                        <select onchange="updateCourse(${idx}, 'track', this.value)" class="border rounded p-1 text-xs">
+                            <option value="건축도시" ${c.track === '건축도시' ? 'selected' : ''}>건축도시</option>
+                            <option value="건축디자인" ${c.track === '건축디자인' ? 'selected' : ''}>건축디자인</option>
+                            <option value="공통" ${c.track === '공통' ? 'selected' : ''}>공통</option>
+                            <option value="일반" ${c.track === '일반' ? 'selected' : ''}>일반/교양</option>
+                        </select>
+                    </td>
+                    <td class="p-2 text-center"><input type="number" value="${c.credits}" min="1" max="6" onchange="updateCourse(${idx}, 'credits', parseFloat(this.value))" class="w-12 border rounded p-1 text-xs text-center"></td>
+                    <td class="p-2 text-center"><input type="number" value="${c.score !== null ? c.score : ''}" placeholder="점수" onchange="updateCourse(${idx}, 'score', this.value !== '' ? parseFloat(this.value) : null)" class="w-14 border rounded p-1 text-xs text-center"></td>
+                    <td class="p-2 text-center">
+                        <select onchange="updateCourse(${idx}, 'grade', this.value)" class="border rounded p-1 text-xs font-bold ${c.grade === 'A+' || c.grade === 'A' ? 'text-blue-600' : ''}">
+                            ${Object.keys(GRADE_SCALE).map(g => `<option value="${g}" ${c.grade === g ? 'selected' : ''}>${g}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td class="p-2 text-center no-print">
+                        <button onclick="deleteCourse(${idx})" class="text-red-400 hover:text-red-600 px-1"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateCourse(idx, field, value) {
+            courses[idx][field] = value;
+            saveAndRecalculate();
+        }
+
+        function addCourseRow() {
+            courses.push({ sem: '27-여름', gradeLvl: '3', name: '새 과목', track: '건축디자인', credits: 3, score: null, grade: 'TBD' });
+            renderTable();
+            saveAndRecalculate();
+        }
+
+        function deleteCourse(idx) {
+            courses.splice(idx, 1);
+            renderTable();
+            saveAndRecalculate();
+        }
+
+        function resetToDefault() {
+            if (confirm("초기 데이터로 되돌리시겠습니까?")) {
+                courses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
+                renderTable();
+                saveAndRecalculate();
+            }
+        }
+
+        function saveAndRecalculate() {
+            localStorage.setItem('hanyang_academic_data', JSON.stringify(courses));
+            calculateAll();
+        }
+
+        function calculateAll() {
+            // 1. Filter completed/evaluable courses
+            let totalWeightedPts = 0;
+            let totalWeightedScore = 0;
+            let totalEvaluatedCredits = 0;
+
+            let creditByTrack = { '건축도시': 0, '건축디자인': 0, '공통': 0, '일반': 0 };
+            let semesterCredits = {};
+
+            // Admission recognition defaults
+            const admissionType = document.getElementById('admissionType').value;
+            let transferCredits = 35; // default 3rd year transfer
+            if (admissionType === 'transfer_2') transferCredits = 70;
+            if (admissionType === 'freshman') transferCredits = 0;
+
+            courses.forEach(c => {
+                const cr = c.credits || 0;
+                const sem = c.sem || '기타';
+                semesterCredits[sem] = (semesterCredits[sem] || 0) + cr;
+
+                // Track accumulation
+                if (c.track && creditByTrack[c.track] !== undefined) {
+                    creditByTrack[c.track] += cr;
+                }
+
+                // GPA calculation for completed grades
+                const gpaVal = GRADE_SCALE[c.grade];
+                if (gpaVal !== null && gpaVal !== undefined) {
+                    totalEvaluatedCredits += cr;
+                    totalWeightedPts += gpaVal * cr;
+                    if (c.score !== null && !isNaN(c.score)) {
+                        totalWeightedScore += c.score * cr;
+                    }
+                }
+            });
+
+            // 2. Summary values
+            const currentGpa = totalEvaluatedCredits > 0 ? (totalWeightedPts / totalEvaluatedCredits) : 0;
+            const currentAvgScore = totalEvaluatedCredits > 0 ? (totalWeightedScore / totalEvaluatedCredits) : 0;
+            const totalPlannedCredits = transferCredits + Object.values(creditByTrack).reduce((a, b) => a + b, 0);
+
+            // Update Header Stats
+            document.getElementById('statGpa').innerText = currentGpa.toFixed(2);
+            document.getElementById('statScore').innerText = currentAvgScore.toFixed(1);
+            document.getElementById('statTotalCredits').innerText = totalPlannedCredits;
+
+            // Update Progress Bars (Requirement Targets: Urban 35, Design 36, Common 21, Total 70)
+            updateBar('urban', creditByTrack['건축도시'], 35);
+            updateBar('design', creditByTrack['건축디자인'], 36);
+            updateBar('common', creditByTrack['공통'], 21);
+            updateBar('total', totalPlannedCredits, 70);
+
+            // 3. Early Graduation & Graduation Check
+            const statusBox = document.getElementById('graduationStatusBox');
+            let isEarlyGradEligible = currentGpa >= 4.0 && totalPlannedCredits >= 70;
+
+            statusBox.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="font-semibold text-slate-700">졸업 총학점 기준 (70학점):</span>
+                    <span class="font-bold ${totalPlannedCredits >= 70 ? 'text-emerald-600' : 'text-amber-600'}">
+                        ${totalPlannedCredits >= 70 ? '충족 (달성)' : '미달 (' + (70 - totalPlannedCredits) + '학점 필요)'}
+                    </span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-semibold text-slate-700">조기졸업 진단 (GPA 4.0 이상):</span>
+                    <span class="font-bold ${isEarlyGradEligible ? 'text-blue-600' : 'text-slate-500'}">
+                        ${isEarlyGradEligible ? '★ 조기졸업 신청 가능' : '일반 졸업 진행 중'}
+                    </span>
+                </div>
+            `;
+
+            // 4. Semester Limit Check
+            const semList = document.getElementById('semesterValidationList');
+            semList.innerHTML = '';
+            Object.keys(semesterCredits).forEach(sem => {
+                const val = semesterCredits[sem];
+                const isOk = val <= 24;
+                const li = document.createElement('li');
+                li.className = "flex justify-between py-0.5 border-b border-slate-100";
+                li.innerHTML = `
+                    <span>${sem} 수강 신청 학점: <strong>${val}학점</strong></span>
+                    <span class="${isOk ? 'text-emerald-600 font-semibold' : 'text-red-500 font-bold'}">
+                        ${isOk ? '✓ 정상 (24학점 이내)' : '⚠ 24학점 초과 경고'}
+                    </span>
+                `;
+                semList.appendChild(li);
+            });
+        }
+
+        function updateBar(id, current, max) {
+            const pct = Math.min(100, Math.round((current / max) * 100));
+            document.getElementById(`${id}ProgressText`).innerText = `${current} / ${max} 학점 (${pct}%)`;
+            document.getElementById(`${id}ProgressBar`).style.width = `${pct}%`;
+        }
+
+        function updateProfile() {
+            calculateAll();
+        }
+
+        // Run on load
+        window.onload = initApp;
+    </script>
+</body>
+</html>
