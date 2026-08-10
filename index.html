@@ -23,7 +23,7 @@
                 <h1 class="text-2xl font-bold flex items-center gap-2">
                     <i class="fa-solid fa-graduation-cap"></i> <span id="headerUnivTitle">한양사이버대학교</span> 성적 산출 & 졸업 로드맵
                 </h1>
-                <p class="text-blue-200 text-sm mt-1">전학기 성적 자동 연동 한도 제어 & 백분율 자동 학점 산출 시스템 (4.5 만점)</p>
+                <p class="text-blue-200 text-sm mt-1">부/복수전공 연동 & 과목 자동완성 및 이수구분 자동 분류 시스템</p>
             </div>
             <div class="flex gap-2">
                 <button onclick="resetToDefault()" class="px-3 py-2 bg-blue-800 hover:bg-blue-700 rounded text-xs transition flex items-center gap-1">
@@ -35,6 +35,30 @@
             </div>
         </div>
     </header>
+
+    <!-- 과목 입력 자동완성을 위한 Datalist -->
+    <datalist id="hycuCourseList">
+        <option value="건축재료" data-dept="건축도시공학과">
+        <option value="건축시공" data-dept="건축도시공학과">
+        <option value="건축구조역학" data-dept="건축도시공학과">
+        <option value="BIM통합설계프로젝트1(PBL)" data-dept="건축도시공학과">
+        <option value="도시주택경제론" data-dept="건축도시공학과">
+        <option value="철근콘크리트구조설계" data-dept="건축도시공학과">
+        <option value="친환경건축기술" data-dept="건축도시공학과">
+        <option value="건축설계실무" data-dept="건축도시공학과">
+        <option value="건설계약및클레임" data-dept="건축도시공학과">
+        <option value="건축도시방재" data-dept="건축도시공학과">
+        <option value="넥스트시티" data-dept="건축도시공학과">
+        <option value="졸업프로젝트(졸업필수)" data-dept="건축도시공학과">
+        <option value="도시계획" data-dept="건축도시공학과">
+        <option value="건축구법" data-dept="건축도시공학과">
+        <option value="일러스트레이터실습" data-dept="건축공간디자인학과">
+        <option value="공간디자인론" data-dept="건축공간디자인학과">
+        <option value="건축디자인" data-dept="건축공간디자인학과">
+        <option value="건축디자인프로그래밍" data-dept="건축공간디자인학과">
+        <option value="라이프스타일디자인" data-dept="건축공간디자인학과">
+        <option value="디자인졸업프로젝트(졸업필수)" data-dept="건축공간디자인학과">
+    </datalist>
 
     <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 print-container">
         
@@ -52,64 +76,91 @@
                         <label class="block text-xs font-bold text-blue-900">소속 대학교</label>
                         <span class="text-sm font-extrabold text-blue-950">🏛️ 한양사이버대학교 (졸업요건: 140학점 기준)</span>
                     </div>
-                    <span class="bg-blue-200 text-blue-900 text-xs px-2.5 py-1 rounded-full font-bold">자동 성적 연동 적용</span>
+                    <span class="bg-blue-200 text-blue-900 text-xs px-2.5 py-1 rounded-full font-bold">2026-2학기 학칙 적용</span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- 1순위: 입학년도 -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- 1. 입학년도 (드롭다운: 2022 ~ 9999) -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">1. 입학년도</label>
-                        <input type="number" id="admissionYear" value="2026" onchange="onProfileChange()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 font-bold bg-white">
+                        <select id="admissionYear" onchange="onProfileChange()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 font-bold bg-white">
+                            <!-- JS에서 2022 ~ 9999 자동 생성 -->
+                        </select>
                     </div>
 
-                    <!-- 2순위: 입학 구분 -->
+                    <!-- 2. 입학 구분 (신입학 -> 2학년 편입 -> 3학년 편입) -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">2. 입학 구분</label>
-                        <select id="admissionType" onchange="onProfileChange()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 font-bold text-blue-900 bg-white">
-                            <option value="transfer_3" selected>3학년 편입 (70학점 인정 / 본교 70학점 이수)</option>
-                            <option value="transfer_2">2학년 편입 (35학점 인정 / 본교 105학점 이수)</option>
-                            <option value="freshman">신입학 (본교 140학점 이수)</option>
+                        <select id="admissionType" onchange="onAdmissionTypeChange()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 font-bold text-blue-900 bg-white">
+                            <option value="freshman">신입학 (1학년부터 시작)</option>
+                            <option value="transfer_2">2학년 편입</option>
+                            <option value="transfer_3" selected>3학년 편입</option>
                         </select>
                     </div>
 
-                    <!-- 3순위: 주전공 드롭다운 -->
+                    <!-- 3. 인정학점 세부 선택 (드롭다운) -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">3. 주전공 학과</label>
+                        <label class="block text-xs font-bold text-blue-900 mb-1">3. 인정학점 구분</label>
+                        <select id="recognizedCreditOption" onchange="onProfileChange()" class="w-full border-blue-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 font-bold text-blue-900 bg-blue-50">
+                            <!-- Dynamic Options based on Admission Type -->
+                        </select>
+                    </div>
+
+                    <!-- 4. 주전공 학과 -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">4. 주전공 학과</label>
                         <select id="primaryMajor" onchange="calculateAll()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
-                            <optgroup label="건축도시·디자인학부/공과대학">
-                                <option value="건축도시공학과" selected>건축도시공학과</option>
-                                <option value="도시계획조경학과">도시계획조경학과</option>
-                                <option value="공간디자인학과">공간디자인학과</option>
-                                <option value="산업디자인학과">산업디자인학과</option>
+                            <optgroup label="디자인학부">
+                                <option value="건축공간디자인학과" selected>건축공간디자인학과</option>
+                                <option value="뉴미디어디자인학과">뉴미디어디자인학과</option>
                                 <option value="시각디자인학과">시각디자인학과</option>
-                                <option value="컴퓨터공학과">컴퓨터공학과</option>
-                                <option value="소프트웨어공학과">소프트웨어공학과</option>
-                                <option value="정보보안학과">정보보안학과</option>
-                                <option value="전기전자공학과">전기전자공학과</option>
-                                <option value="기계제어공학과">기계제어공학과</option>
-                                <option value="자동차IT융합공학과">자동차IT융합공학과</option>
-                                <option value="안전보건공학과">안전보건공학과</option>
+                                <option value="예술문화디자인학과">예술문화디자인학과</option>
+                                <option value="AI산업디자인학과">AI산업디자인학과</option>
                             </optgroup>
-                            <optgroup label="경영·사회과학 계열">
-                                <option value="경영학과">경영학과</option>
+                            <optgroup label="공과대학">
+                                <option value="건축도시공학과">건축도시공학과</option>
+                                <option value="국방융합기술학과">국방융합기술학과</option>
+                                <option value="기계제어공학과">기계제어공학과</option>
+                                <option value="반도체시스템공학과">반도체시스템공학과</option>
+                                <option value="스마트배터리공학과">스마트배터리공학과</option>
+                                <option value="자동차IT융합공학과">자동차IT융합공학과</option>
+                                <option value="전기전자공학과">전기전자공학과</option>
+                                <option value="컴퓨터공학과">컴퓨터공학과</option>
+                            </optgroup>
+                            <optgroup label="인문사회/융합경영대학">
+                                <option value="사회복지학과">사회복지학과</option>
+                                <option value="상담심리학과">상담심리학과</option>
                                 <option value="부동산학과">부동산학과</option>
-                                <option value="세무회계학과">세무회계학과</option>
-                                <option value="외식프랜차이즈학과">외식프랜차이즈학과</option>
-                                <option value="마케팅·지식재산학과">마케팅·지식재산학과</option>
-                                <option value="경찰학과">경찰학과</option>
-                                <option value="법학과">법학과</option>
+                                <option value="경영정보·AI비즈니스학과">경영정보·AI비즈니스학과</option>
                             </optgroup>
                         </select>
                     </div>
 
-                    <!-- 4순위: 복수/부전공 구분 -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">4. 복수/부전공</label>
+                    <!-- 5. 부/복수전공 선택 (PDF 리포트 학과 전체 반영) -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">5. 복수전공 / 부전공 신청 학과 (2026-2학기 기준)</label>
                         <select id="secondMajor" onchange="calculateAll()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
                             <option value="none" selected>해당 없음 (단일 전공)</option>
-                            <option value="건축도시공학과_double">복수전공: 건축도시공학과</option>
-                            <option value="공간디자인학과_double">복수전공: 공간디자인학과</option>
-                            <option value="컴퓨터공학과_double">복수전공: 컴퓨터공학과</option>
+                            <optgroup label="디자인학부 (복수전공 시 졸업과목 필수)">
+                                <option value="double_건축공간디자인학과">복수전공: 건축공간디자인학과</option>
+                                <option value="minor_건축공간디자인학과">부전공: 건축공간디자인학과</option>
+                                <option value="double_뉴미디어디자인학과">복수전공: 뉴미디어디자인학과</option>
+                                <option value="double_시각디자인학과">복수전공: 시각디자인학과</option>
+                                <option value="double_예술문화디자인학과">복수전공: 예술문화디자인학과</option>
+                                <option value="double_AI산업디자인학과">복수전공: AI산업디자인학과</option>
+                            </optgroup>
+                            <optgroup label="공과대학">
+                                <option value="double_건축도시공학과">복수전공: 건축도시공학과</option>
+                                <option value="minor_건축도시공학과">부전공: 건축도시공학과</option>
+                                <option value="double_컴퓨터공학과">복수전공: 컴퓨터공학과</option>
+                                <option value="double_전기전자공학과">복수전공: 전기전자공학과</option>
+                                <option value="double_기계제어공학과">복수전공: 기계제어공학과</option>
+                            </optgroup>
+                            <optgroup label="인문사회/융합경영">
+                                <option value="double_부동산학과">복수전공: 부동산학과</option>
+                                <option value="double_사회복지학과">복수전공: 사회복지학과</option>
+                                <option value="double_상담심리학과">복수전공: 상담심리학과</option>
+                            </optgroup>
                         </select>
                     </div>
                 </div>
@@ -120,7 +171,7 @@
                 <div>
                     <span class="font-bold text-blue-900 text-sm block">🎓 한양사이버대 편입학 인정학점 안내</span>
                     <span class="text-blue-700" id="transferCreditsDetailText">
-                        3학년 편입생은 전적대학 학점 70학점이 인정되며, 본교에서 70학점 이상 추가 이수하셔야 합니다.
+                        선택하신 인정학점 기준에 따라 본교 추가 이수학점이 자동으로 계산됩니다.
                     </span>
                 </div>
                 <div class="text-right whitespace-nowrap pl-2">
@@ -161,8 +212,8 @@
                     <table class="w-full text-left text-xs min-w-[600px]">
                         <thead class="bg-slate-100 text-slate-700 uppercase">
                             <tr>
-                                <th class="p-2 border-b w-1/3">과목명 (수업명)</th>
-                                <th class="p-2 border-b w-24">이수구분</th>
+                                <th class="p-2 border-b w-2/5">과목명 (수업명)</th>
+                                <th class="p-2 border-b w-28">자동 이수구분</th>
                                 <th class="p-2 border-b text-center w-16">학점</th>
                                 <th class="p-2 border-b text-center w-28">백분율(점수)</th>
                                 <th class="p-2 border-b text-center w-20">자동 등급</th>
@@ -219,7 +270,7 @@
                 <div class="space-y-4 text-xs">
                     <div>
                         <div class="flex justify-between font-semibold mb-1">
-                            <span>전공선택 / 전공필수 이수</span>
+                            <span>주전공 이수</span>
                             <span id="majorProgressText">0 / 35 학점</span>
                         </div>
                         <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
@@ -229,7 +280,7 @@
 
                     <div>
                         <div class="flex justify-between font-semibold mb-1">
-                            <span>교양 / 공통 이수</span>
+                            <span>복수/부전공 / 교양이수</span>
                             <span id="commonProgressText">0 / 21 학점</span>
                         </div>
                         <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
@@ -263,6 +314,30 @@
     </main>
 
     <script>
+        // 개설 과목DB (과목명 : 개설 학과)
+        const COURSE_DATABASE = {
+            "건축재료": "건축도시공학과",
+            "건축시공": "건축도시공학과",
+            "건축구조역학": "건축도시공학과",
+            "BIM통합설계프로젝트1(PBL)": "건축도시공학과",
+            "도시주택경제론": "건축도시공학과",
+            "철근콘크리트구조설계": "건축도시공학과",
+            "친환경건축기술": "건축도시공학과",
+            "건축설계실무": "건축도시공학과",
+            "건설계약및클레임": "건축도시공학과",
+            "건축도시방재": "건축도시공학과",
+            "넥스트시티": "건축도시공학과",
+            "졸업프로젝트(졸업필수)": "건축도시공학과",
+            "도시계획": "건축도시공학과",
+            "건축구법": "건축도시공학과",
+            "일러스트레이터실습": "건축공간디자인학과",
+            "공간디자인론": "건축공간디자인학과",
+            "건축디자인": "건축공간디자인학과",
+            "건축디자인프로그래밍": "건축공간디자인학과",
+            "라이프스타일디자인": "건축공간디자인학과",
+            "디자인졸업프로젝트(졸업필수)": "건축공간디자인학과"
+        };
+
         function getGradeFromScore(score) {
             if (score === null || score === undefined || isNaN(score) || score === '') {
                 return { grade: '미입력', gpa: null };
@@ -285,7 +360,48 @@
         let semesterTabsList = [];
 
         function initApp() {
-            courses = [];
+            populateAdmissionYears();
+            onAdmissionTypeChange();
+        }
+
+        // 2022년부터 9999년까지 드롭다운 옵션 생성
+        function populateAdmissionYears() {
+            const yearSelect = document.getElementById('admissionYear');
+            yearSelect.innerHTML = '';
+            for (let y = 2022; y <= 9999; y++) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.innerText = `${y}학년도`;
+                if (y === 2026) opt.selected = true;
+                yearSelect.appendChild(opt);
+            }
+        }
+
+        // 입학구분에 따른 인정학점 3가지 세부 옵션 생성
+        function onAdmissionTypeChange() {
+            const admType = document.getElementById('admissionType').value;
+            const creditOptSelect = document.getElementById('recognizedCreditOption');
+            creditOptSelect.innerHTML = '';
+
+            if (admType === 'transfer_3') {
+                creditOptSelect.innerHTML = `
+                    <option value="70" selected>전적대 인정: 70학점 (기본)</option>
+                    <option value="35">전적대 인정: 35학점 (부분 인정)</option>
+                    <option value="0">전적대 인정: 0학점 (예외)</option>
+                `;
+            } else if (admType === 'transfer_2') {
+                creditOptSelect.innerHTML = `
+                    <option value="35" selected>전적대 인정: 35학점 (기본)</option>
+                    <option value="70">전적대 인정: 70학점 (최대 인정)</option>
+                    <option value="0">전적대 인정: 0학점 (예외)</option>
+                `;
+            } else { // freshman
+                creditOptSelect.innerHTML = `
+                    <option value="0" selected>신입학: 0학점 (기본)</option>
+                    <option value="12">타기관 인정: 12학점</option>
+                    <option value="24">타기관 인정: 24학점</option>
+                `;
+            }
             onProfileChange();
         }
 
@@ -293,9 +409,9 @@
             const year = parseInt(document.getElementById('admissionYear').value) || 2026;
             const admissionType = document.getElementById('admissionType').value;
 
-            let startGrade = 3;
+            let startGrade = 1;
             if (admissionType === 'transfer_2') startGrade = 2;
-            if (admissionType === 'freshman') startGrade = 1;
+            if (admissionType === 'transfer_3') startGrade = 3;
 
             const semTypes = ['봄', '여름', '가을', '겨울'];
             let semList = [];
@@ -316,12 +432,10 @@
             return semList;
         }
 
-        // 직전 정규 학기 성적(GPA) 자동 계산 함수
         function getPrevRegularSemesterGpa(currentKey) {
             const currentIdx = semesterTabsList.findIndex(s => s.key === currentKey);
-            if (currentIdx <= 0) return null; // 첫 학기인 경우 (직전 학기 없음)
+            if (currentIdx <= 0) return null;
 
-            // 이전 정규학기(봄/가을) 찾기
             for (let i = currentIdx - 1; i >= 0; i--) {
                 const sem = semesterTabsList[i];
                 if (!sem.isSeasonal) {
@@ -336,15 +450,12 @@
                             crs += cr;
                         }
                     });
-                    if (crs > 0) {
-                        return pts / crs;
-                    }
+                    if (crs > 0) return pts / crs;
                 }
             }
-            return null; // 직전 학기 평가 데이터가 없는 경우
+            return null;
         }
 
-        // 학기별 탭 슬롯 보장 (정규 8칸 / 계절 3칸)
         function ensureDefaultSlotsForTab(semKey) {
             const semObj = semesterTabsList.find(s => s.key === semKey);
             const isSeasonal = semObj ? semObj.isSeasonal : (semKey.includes('여름') || semKey.includes('겨울'));
@@ -357,7 +468,7 @@
                     courses.push({
                         semKey: semKey,
                         name: '',
-                        track: '전공선택',
+                        track: '자동판정',
                         credits: 3,
                         score: null
                     });
@@ -368,19 +479,15 @@
         function onProfileChange() {
             semesterTabsList = generateSemesterList();
             
-            const admType = document.getElementById('admissionType').value;
+            const recognizedCredits = parseInt(document.getElementById('recognizedCreditOption').value) || 0;
             const infoCard = document.getElementById('transferCreditsInfoCard');
             const badge = document.getElementById('transferCreditsBadge');
             const detailText = document.getElementById('transferCreditsDetailText');
 
-            if (admType === 'transfer_3') {
+            if (recognizedCredits > 0) {
                 infoCard.style.display = 'flex';
-                badge.innerText = '70';
-                detailText.innerText = '3학년 편입생은 전적대학 학점 70학점이 인정되며, 본교에서 70학점 이상 추가 이수하셔야 합니다.';
-            } else if (admType === 'transfer_2') {
-                infoCard.style.display = 'flex';
-                badge.innerText = '35';
-                detailText.innerText = '2학년 편입생은 전적대학 학점 35학점이 인정되며, 본교에서 105학점 이상 추가 이수하셔야 합니다.';
+                badge.innerText = recognizedCredits;
+                detailText.innerText = `전적대/타기관 인정 학점 ${recognizedCredits}학점이 반영되었습니다. 본교에서 ${140 - recognizedCredits}학점을 추가 취득하셔야 합니다.`;
             } else {
                 infoCard.style.display = 'none';
             }
@@ -436,6 +543,42 @@
             }
         }
 
+        // 과목명과 주전공/복수전공/부전공 매칭을 통한 자동 이수구분 판정
+        function evaluateCourseTrack(courseName) {
+            if (!courseName || courseName.trim() === '') return '일반';
+
+            const trimmedName = courseName.trim();
+            const offeringDept = COURSE_DATABASE[trimmedName];
+
+            const primaryDept = document.getElementById('primaryMajor').value;
+            const secondVal = document.getElementById('secondMajor').value;
+
+            let secondType = 'none';
+            let secondDept = '';
+            if (secondVal.startsWith('double_')) {
+                secondType = '복수전공';
+                secondDept = secondVal.replace('double_', '');
+            } else if (secondVal.startsWith('minor_')) {
+                secondType = '부전공';
+                secondDept = secondVal.replace('minor_', '');
+            }
+
+            // 1. 개설 DB 매칭 검사
+            if (offeringDept) {
+                if (offeringDept === primaryDept) return '전공';
+                if (secondType !== 'none' && offeringDept === secondDept) return secondType;
+            }
+
+            // 2. 키워드 기반 매칭 검사
+            if (primaryDept.includes('건축') || primaryDept.includes('디자인')) {
+                if (trimmedName.includes('건축') || trimmedName.includes('디자인') || trimmedName.includes('시공') || trimmedName.includes('구조') || trimmedName.includes('BIM')) {
+                    return '전공';
+                }
+            }
+
+            return '일반';
+        }
+
         function renderTable() {
             const tbody = document.getElementById('courseTableBody');
             tbody.innerHTML = '';
@@ -444,7 +587,6 @@
             const isSeasonal = currentSemObj ? currentSemObj.isSeasonal : false;
             const prevGpa = getPrevRegularSemesterGpa(currentSemKey);
 
-            // 해당 학년 정규학기 수강 총 학점 계산 (계절학기 제한 검사용)
             let regCreditsInYear = 0;
             if (isSeasonal && currentSemObj) {
                 courses.forEach(c => {
@@ -473,7 +615,9 @@
                 const realIdx = courses.indexOf(c);
                 const evalGrade = getGradeFromScore(c.score);
 
-                // 정규학기에서 직전학기 평점이 3.0 미만이면 7~8번째 줄(index 6, 7) 비활성화
+                const autoTrack = evaluateCourseTrack(c.name);
+                courses[realIdx].track = autoTrack;
+
                 const isRegDisabled = !isSeasonal && (prevGpa !== null && prevGpa < 3.0) && indexInTab >= 6;
                 const isDisabledRow = isSeasonalBlocked || isRegDisabled;
 
@@ -481,18 +625,20 @@
                 tr.className = `border-b border-slate-100 ${isDisabledRow ? 'bg-slate-100 opacity-50' : 'hover:bg-slate-50'}`;
                 tr.innerHTML = `
                     <td class="p-2">
-                        <input type="text" value="${c.name || ''}" placeholder="${isDisabledRow ? '입력 제한' : '과목명 입력 (예: 건축시공)'}" 
+                        <input type="text" list="hycuCourseList" value="${c.name || ''}" placeholder="${isDisabledRow ? '입력 제한' : '과목명 검색 (예: 건축시공)'}" 
                                ${isDisabledRow ? 'disabled' : ''}
                                oninput="updateCourseName(${realIdx}, this.value)" 
                                class="w-full border rounded p-1.5 text-xs font-medium focus:ring-1 focus:ring-blue-500 disabled:bg-slate-200">
                     </td>
                     <td class="p-2">
-                        <select onchange="updateCourseTrack(${realIdx}, this.value)" ${isDisabledRow ? 'disabled' : ''} class="w-full border rounded p-1 text-xs disabled:bg-slate-200">
-                            <option value="전공선택" ${c.track === '전공선택' ? 'selected' : ''}>전공선택</option>
-                            <option value="전공필수" ${c.track === '전공필수' ? 'selected' : ''}>전공필수</option>
-                            <option value="학부공통" ${c.track === '학부공통' ? 'selected' : ''}>학부공통</option>
-                            <option value="교양일반" ${c.track === '교양일반' ? 'selected' : ''}>교양/일반</option>
-                        </select>
+                        <span class="px-2 py-1 rounded text-xs font-bold ${
+                            autoTrack === '전공' ? 'bg-blue-100 text-blue-800' :
+                            autoTrack === '복수전공' ? 'bg-indigo-100 text-indigo-800' :
+                            autoTrack === '부전공' ? 'bg-purple-100 text-purple-800' :
+                            'bg-slate-100 text-slate-600'
+                        }" id="track-label-${realIdx}">
+                            ${autoTrack}
+                        </span>
                     </td>
                     <td class="p-2 text-center">
                         <input type="number" value="${c.credits || 3}" min="1" max="6" ${isDisabledRow ? 'disabled' : ''}
@@ -519,7 +665,6 @@
             });
         }
 
-        // 입력 문자 포커스 튕김 없는 즉시 동기화
         function onScoreInput(idx, val, inputEl) {
             const numVal = val !== '' ? parseFloat(val) : null;
             courses[idx].score = numVal;
@@ -536,12 +681,21 @@
 
         function updateCourseName(idx, val) {
             courses[idx].name = val;
-            saveAndRecalculateSilent();
-        }
+            const autoTrack = evaluateCourseTrack(val);
+            courses[idx].track = autoTrack;
 
-        function updateCourseTrack(idx, val) {
-            courses[idx].track = val;
-            calculateAll();
+            const trackLbl = document.getElementById(`track-label-${idx}`);
+            if (trackLbl) {
+                trackLbl.innerText = autoTrack;
+                trackLbl.className = `px-2 py-1 rounded text-xs font-bold ${
+                    autoTrack === '전공' ? 'bg-blue-100 text-blue-800' :
+                    autoTrack === '복수전공' ? 'bg-indigo-100 text-indigo-800' :
+                    autoTrack === '부전공' ? 'bg-purple-100 text-purple-800' :
+                    'bg-slate-100 text-slate-600'
+                }`;
+            }
+
+            saveAndRecalculateSilent();
         }
 
         function updateCourseCredits(idx, val) {
@@ -550,7 +704,7 @@
         }
 
         function addCourseToCurrentTab() {
-            courses.push({ semKey: currentSemKey, name: '', track: '전공선택', credits: 3, score: null });
+            courses.push({ semKey: currentSemKey, name: '', track: '일반', credits: 3, score: null });
             renderTable();
             calculateAll();
         }
@@ -564,13 +718,13 @@
         function resetToDefault() {
             if (confirm("입력하신 모든 과목 및 학점 데이터가 초기화됩니다. 진행하시겠습니까?")) {
                 courses = [];
-                localStorage.removeItem('hanyang_academic_data_hycu_v7');
-                onProfileChange();
+                localStorage.removeItem('hanyang_academic_data_hycu_v8');
+                initApp();
             }
         }
 
         function saveAndRecalculateSilent() {
-            localStorage.setItem('hanyang_academic_data_hycu_v7', JSON.stringify(courses));
+            localStorage.setItem('hanyang_academic_data_hycu_v8', JSON.stringify(courses));
             calculateAll();
         }
 
@@ -579,21 +733,11 @@
             let totalWeightedScore = 0;
             let totalEvaluatedCredits = 0;
 
-            let creditByTrack = { '전공선택': 0, '전공필수': 0, '학부공통': 0, '교양일반': 0 };
+            let creditByTrack = { '전공': 0, '복수전공': 0, '부전공': 0, '일반': 0 };
             let semesterCredits = {};
 
-            const admissionType = document.getElementById('admissionType').value;
-            
-            let transferCredits = 70; 
-            let requiredHycuCredits = 70;
-
-            if (admissionType === 'transfer_2') {
-                transferCredits = 35;
-                requiredHycuCredits = 105;
-            } else if (admissionType === 'freshman') {
-                transferCredits = 0;
-                requiredHycuCredits = 140;
-            }
+            const recognizedCredits = parseInt(document.getElementById('recognizedCreditOption').value) || 0;
+            const requiredHycuCredits = 140 - recognizedCredits;
 
             let takingCredits = 0;
             courses.forEach(c => {
@@ -603,9 +747,8 @@
                     const semKey = c.semKey || '기타';
                     semesterCredits[semKey] = (semesterCredits[semKey] || 0) + cr;
 
-                    if (c.track && creditByTrack[c.track] !== undefined) {
-                        creditByTrack[c.track] += cr;
-                    }
+                    const trk = c.track || '일반';
+                    creditByTrack[trk] = (creditByTrack[trk] || 0) + cr;
 
                     const evalResult = getGradeFromScore(c.score);
                     if (evalResult.gpa !== null) {
@@ -618,17 +761,17 @@
 
             const currentGpa = totalEvaluatedCredits > 0 ? (totalWeightedPts / totalEvaluatedCredits) : 0;
             const currentAvgScore = totalEvaluatedCredits > 0 ? (totalWeightedScore / totalEvaluatedCredits) : 0;
-            const totalPlannedCredits = transferCredits + takingCredits;
+            const totalPlannedCredits = recognizedCredits + takingCredits;
 
             document.getElementById('statGpa').innerText = currentGpa.toFixed(2);
             document.getElementById('statScore').innerText = currentAvgScore.toFixed(1);
             document.getElementById('statTotalCredits').innerText = totalPlannedCredits;
 
-            const majorTotal = creditByTrack['전공선택'] + creditByTrack['전공필수'];
-            const commonTotal = creditByTrack['학부공통'] + creditByTrack['교양일반'];
+            const majorTotal = creditByTrack['전공'] || 0;
+            const otherTotal = (creditByTrack['복수전공'] || 0) + (creditByTrack['부전공'] || 0) + (creditByTrack['일반'] || 0);
 
             updateBar('major', majorTotal, 35);
-            updateBar('common', commonTotal, 21);
+            updateBar('common', otherTotal, 21);
             updateBar('total', totalPlannedCredits, 140);
 
             const statusBox = document.getElementById('graduationStatusBox');
