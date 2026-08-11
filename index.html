@@ -433,6 +433,21 @@
         }
 
         function onAdmissionTypeChange() {
+            const admissionType = document.getElementById('admissionType').value;
+            const transferCategorySelect = document.getElementById('transferMajorCategory');
+        
+            if (admissionType === 'freshman') {
+                // 1학년 신입학인 경우: '해당없음' 선택 및 비활성화 처리
+                transferCategorySelect.value = 'none';
+                transferCategorySelect.disabled = true;
+            } else {
+                // 편입학인 경우: 활성화 처리 및 기본값 설정
+                transferCategorySelect.disabled = false;
+                if (transferCategorySelect.value === 'none') {
+                    transferCategorySelect.value = 'same'; // 기본값 동일전공
+                }
+            }
+        
             onProfileChange();
         }
 
@@ -518,6 +533,12 @@
             const admType = document.getElementById('admissionType').value;
             const category = document.getElementById('transferMajorCategory').value;
             const matrix = ACTIVE_CONFIG.transferCreditMatrix || {};
+            
+            // 신입학이거나 matrix에 해당 조건이 없는 경우 0학점 반환
+            if (admType === 'freshman' || category === 'none') {
+                return { lib: 0, maj: 0, gen: 0, total: 0 };
+            }
+        
             if (matrix[admType] && matrix[admType][category]) {
                 return matrix[admType][category];
             }
