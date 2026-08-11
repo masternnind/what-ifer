@@ -195,12 +195,65 @@ const HYCU_CONFIG = {
             { name: "4차산업디자인", credits: 4 },
             { name: "브랜드경험과디자인", credits: 3 }
         ],
-        "일반/교양": [
-            { name: "대학글쓰기", credits: 2 },
-            { name: "컴퓨터활용실습", credits: 2 },
-            { name: "기초영어", credits: 2 },
-            { name: "현대사회와윤리", credits: 3 },
-            { name: "경영학개론", credits: 3 }
+       "일반/교양": [
+            // 기초교양
+            { name: "사회봉사1", credits: 1 },
+            { name: "HY-LIGHT학업진로설계", credits: 1 },
+            { name: "AI리터러시", credits: 2 },
+            { name: "사랑의실천", credits: 3 },
+            { name: "창의적사고와글쓰기", credits: 3 },
+            { name: "인공지능시대의컴퓨팅사고", credits: 3 },
+            { name: "AI시대의과학기술과윤리", credits: 3 },
+            { name: "과학기술의철학적이해", credits: 3 },
+
+            // 영역교양 - 경제와사회
+            { name: "아버지학교", credits: 3 },
+            { name: "영화로보는미디어의세계", credits: 3 },
+            { name: "4050인생디자인", credits: 3 },
+            { name: "나의가치나의직업", credits: 3 },
+            { name: "알기쉬운일본사의이해", credits: 3 },
+            { name: "현대인의정신건강", credits: 3 },
+            { name: "생활법률", credits: 3 },
+            { name: "행복심리", credits: 3 },
+            { name: "행복한아동기", credits: 3 },
+            { name: "현대사회의결혼과가족", credits: 3 },
+            { name: "글로벌사회적경제", credits: 3 },
+            { name: "디지털환경과정서리터러시", credits: 3 },
+            { name: "일상생활속마케팅", credits: 3 },
+            { name: "생활속부동산", credits: 3 },
+
+            // 영역교양 - 과학과기술
+            { name: "1인미디어의이해", credits: 4 },
+            { name: "크리에이터영상제작론", credits: 3 },
+            { name: "기후변화와그린라이프", credits: 3 },
+            { name: "파워포인트디자인", credits: 3 },
+            { name: "클라우드오피스활용(MS오피스활용)", credits: 3 },
+            { name: "프레젠테이션기법", credits: 3 },
+            { name: "과학기술의역사", credits: 3 },
+            { name: "AI시대디지털미디어의이해", credits: 3 },
+            { name: "세계도시건축", credits: 3 },
+
+            // 영역교양 - 문화와예술
+            { name: "커피아카데미아", credits: 3 },
+            { name: "셰익스피어인간형", credits: 3 },
+            { name: "실용글쓰기", credits: 3 },
+            { name: "문화진화로보는인문학", credits: 3 },
+            { name: "도시관광의이해", credits: 3 },
+            { name: "디자인과문화", credits: 3 },
+            { name: "소설과영화", credits: 3 },
+            { name: "영화속의세계문화", credits: 3 },
+            { name: "슬로라이프여행", credits: 3 },
+            { name: "한류문화담론", credits: 4 },
+            { name: "축제와이벤트", credits: 3 },
+
+            // 영역교양 - 역사와철학
+            { name: "복지국가의역사와사상", credits: 3 },
+            { name: "한국사", credits: 3 },
+            { name: "철학의이해", credits: 3 },
+            { name: "현대철학", credits: 3 },
+            { name: "서양사", credits: 3 },
+            { name: "AI시대의고전윤리학", credits: 3 },
+            { name: "동아시아근현대사의이해", credits: 3 }
         ]
     }
 };
