@@ -23,7 +23,7 @@
                 <h1 class="text-2xl font-bold flex items-center gap-2">
                     <i class="fa-solid fa-graduation-cap"></i> <span id="headerUnivTitle">한양사이버대학교</span> 성적 산출 & 졸업 로드맵
                 </h1>
-                <p class="text-blue-200 text-sm mt-1">팝업 과목 검색 & 2학점 대비 12슬롯 고정 학기 관리 시스템</p>
+                <p class="text-blue-200 text-sm mt-1">팝업창 전공별 과목 선택 & 주전공-복수전공 공통 과목 자동 판정 시스템</p>
             </div>
             <div class="flex gap-2">
                 <button onclick="resetToDefault()" class="px-3 py-2 bg-blue-800 hover:bg-blue-700 rounded text-xs transition flex items-center gap-1">
@@ -52,7 +52,7 @@
                         <label class="block text-xs font-bold text-blue-900">소속 대학교</label>
                         <span class="text-sm font-extrabold text-blue-950">🏛️ 한양사이버대학교 (졸업요건: 총 140학점)</span>
                     </div>
-                    <span class="bg-blue-200 text-blue-900 text-xs px-2.5 py-1 rounded-full font-bold">전적대 세부인정 규정</span>
+                    <span class="bg-blue-200 text-blue-900 text-xs px-2.5 py-1 rounded-full font-bold">공통 과목 자동 분류</span>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -88,21 +88,13 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">4. 주전공 학과</label>
                         <select id="primaryMajor" onchange="calculateAll()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
-                            <optgroup label="디자인학부">
-                                <option value="건축공간디자인학과" selected>건축공간디자인학과</option>
+                            <optgroup label="디자인학부/공과대학">
+                                <option value="건축도시공학과" selected>건축도시공학과</option>
+                                <option value="건축공간디자인학과">건축공간디자인학과</option>
                                 <option value="뉴미디어디자인학과">뉴미디어디자인학과</option>
                                 <option value="시각디자인학과">시각디자인학과</option>
                                 <option value="예술문화디자인학과">예술문화디자인학과</option>
                                 <option value="AI산업디자인학과">AI산업디자인학과</option>
-                            </optgroup>
-                            <optgroup label="공과대학">
-                                <option value="건축도시공학과">건축도시공학과</option>
-                                <option value="국방융합기술학과">국방융합기술학과</option>
-                                <option value="기계제어공학과">기계제어공학과</option>
-                                <option value="반도체시스템공학과">반도체시스템공학과</option>
-                                <option value="스마트배터리공학과">스마트배터리공학과</option>
-                                <option value="자동차IT융합공학과">자동차IT융합공학과</option>
-                                <option value="전기전자공학과">전기전자공학과</option>
                                 <option value="컴퓨터공학과">컴퓨터공학과</option>
                             </optgroup>
                             <optgroup label="인문사회/융합경영대학">
@@ -118,13 +110,11 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">5. 복수전공 학과</label>
                         <select id="doubleMajorSelect" onchange="calculateAll()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
-                            <option value="none" selected>해당 없음</option>
+                            <option value="none">해당 없음</option>
+                            <option value="건축공간디자인학과" selected>건축공간디자인학과</option>
                             <option value="건축도시공학과">건축도시공학과</option>
-                            <option value="건축공간디자인학과">건축공간디자인학과</option>
                             <option value="뉴미디어디자인학과">뉴미디어디자인학과</option>
                             <option value="시각디자인학과">시각디자인학과</option>
-                            <option value="예술문화디자인학과">예술문화디자인학과</option>
-                            <option value="AI산업디자인학과">AI산업디자인학과</option>
                             <option value="컴퓨터공학과">컴퓨터공학과</option>
                             <option value="부동산학과">부동산학과</option>
                         </select>
@@ -194,9 +184,9 @@
                     <table class="w-full text-left text-xs min-w-[650px]">
                         <thead class="bg-slate-100 text-slate-700 uppercase">
                             <tr>
-                                <th class="p-2 border-b w-28">이수구분</th>
-                                <th class="p-2 border-b w-2/5">과목명 (수업 검색 선택)</th>
-                                <th class="p-2 border-b text-center w-16">학점</th>
+                                <th class="p-2 border-b w-1/2">과목명 (클릭하여 팝업창에서 선택)</th>
+                                <th class="p-2 border-b text-center w-28">자동 이수구분</th>
+                                <th class="p-2 border-b text-center w-16">자동 학점</th>
                                 <th class="p-2 border-b text-center w-28">백분율(점수)</th>
                                 <th class="p-2 border-b text-center w-16">자동 등급</th>
                                 <th class="p-2 border-b text-center w-16">자동 평점</th>
@@ -253,7 +243,7 @@
                     <!-- 1. 주전공 이수 게이지 -->
                     <div>
                         <div class="flex justify-between font-semibold mb-1">
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> 주전공 학점 (인정+취득)</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> 주전공 학점 (공통 포함)</span>
                             <span id="majorProgressText">0 / 35 학점</span>
                         </div>
                         <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
@@ -264,7 +254,7 @@
                     <!-- 2. 복수전공 이수 게이지 -->
                     <div id="doubleMajorBox" class="hidden">
                         <div class="flex justify-between font-semibold mb-1">
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span> 복수전공 학점</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span> 복수전공 학점 (공통 포함)</span>
                             <span id="doubleProgressText">0 / 35 학점</span>
                         </div>
                         <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
@@ -297,7 +287,7 @@
                     <!-- 5. 총 졸업기준 통합 멀티 컬러 프로그레스 바 -->
                     <div class="pt-2 border-t">
                         <div class="flex justify-between font-bold mb-1">
-                            <span>총 졸업학점 누적 (목표: 140학점)</span>
+                            <span>총 졸업학점 누적 (공통 중복차감 반영)</span>
                             <span id="totalProgressText">0 / 140 학점 (0%)</span>
                         </div>
                         <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden flex">
@@ -336,9 +326,22 @@
         <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 mx-4 space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                    <i class="fa-solid fa-book-bookmark text-blue-600"></i> <span id="modalCategoryTitle">개설 교과목 선택</span>
+                    <i class="fa-solid fa-book-bookmark text-blue-600"></i> <span>교과목 검색 및 선택</span>
                 </h3>
                 <button onclick="closeCourseModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+            </div>
+
+            <!-- 전공 메뉴 탭 (주전공 / 복수전공 / 부전공 / 교양일반) -->
+            <div class="flex space-x-1 border-b pb-2" id="modalMenuTabs">
+                <button onclick="switchModalTab('primary')" id="tabBtnPrimary" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-900 text-white">주전공 학과</button>
+                <button onclick="switchModalTab('double')" id="tabBtnDouble" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">복수전공 학과</button>
+                <button onclick="switchModalTab('minor')" id="tabBtnMinor" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">부전공 학과</button>
+                <button onclick="switchModalTab('general')" id="tabBtnGeneral" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">교양 / 일반</button>
+            </div>
+
+            <!-- 선택 학과 안내 -->
+            <div class="text-xs font-semibold text-blue-900 bg-blue-50 p-2 rounded border border-blue-200" id="modalDeptInfoLabel">
+                현재 학과: 건축도시공학과
             </div>
 
             <!-- 과목 검색 필터 입력란 -->
@@ -347,7 +350,7 @@
             </div>
 
             <!-- 과목 목록 선택 리스트 -->
-            <div id="modalCourseListContainer" class="max-h-64 overflow-y-auto divide-y divide-slate-100 border rounded-lg">
+            <div id="modalCourseListContainer" class="max-h-60 overflow-y-auto divide-y divide-slate-100 border rounded-lg">
                 <!-- Dynamic Course List -->
             </div>
 
@@ -358,33 +361,92 @@
     </div>
 
     <script>
+        // 건축도시공학과 & 건축공간디자인학과 2026 교육과정 DB
         const COURSE_DATABASE = {
             "건축도시공학과": [
+                { name: "건축학개론", credits: 3 },
+                { name: "도시및지역경제", credits: 3 },
+                { name: "건축3D모델링", credits: 3 },
+                { name: "도시계획", credits: 3 },
+                { name: "도시설계론", credits: 3 },
+                { name: "건축계획", credits: 3 },
                 { name: "건축재료", credits: 3 },
-                { name: "건축시공", credits: 3 },
-                { name: "건축구조역학", credits: 3 },
-                { name: "BIM통합설계프로젝트1(PBL)", credits: 3 },
-                { name: "도시주택경제론", credits: 3 },
-                { name: "철근콘크리트구조설계", credits: 3 },
-                { name: "건축설계실무", credits: 3 },
-                { name: "건설계약및클레임", credits: 3 },
+                { name: "단지계획및개발", credits: 3 },
+                { name: "건축구법", credits: 3 },
+                { name: "도시건축과BIM", credits: 3 },
                 { name: "건축도시방재", credits: 3 },
+                { name: "토지이용계획", credits: 3 },
+                { name: "도시계량분석", credits: 3 },
+                { name: "건축구조역학", credits: 3 },
+                { name: "건축시공", credits: 3 },
+                { name: "스마트건설경영", credits: 3 },
+                { name: "공정원가통합관리", credits: 3 },
+                { name: "GIS개론및활용", credits: 3 },
+                { name: "건축설비", credits: 3 },
+                { name: "도시재생", credits: 3 },
+                { name: "지구단위계획의이해", credits: 3 },
+                { name: "철근콘크리트구조설계", credits: 3 },
+                { name: "디지털생산관리및자동화", credits: 3 },
+                { name: "건설프로젝트금융", credits: 3 },
+                { name: "친환경건축기술", credits: 3 },
+                { name: "국토및지역계획", credits: 3 },
+                { name: "도시주택경제론", credits: 3 },
+                { name: "강구조설계", credits: 3 },
+                { name: "건축법규", credits: 3 },
+                { name: "교통계획", credits: 3 },
+                { name: "BIM통합설계프로젝트1", credits: 3 },
                 { name: "넥스트시티", credits: 3 },
-                { name: "졸업프로젝트(졸업필수)", credits: 2 },
-                { name: "도시계획", credits: 3, isCommon: true },
-                { name: "건축구법", credits: 3, isCommon: true },
-                { name: "친환경건축기술", credits: 3, isCommon: true }
+                { name: "도시경관계획", credits: 3 },
+                { name: "건설계약및클레임", credits: 3 },
+                { name: "스마트교통시스템", credits: 3 },
+                { name: "건축설계실무", credits: 3 },
+                { name: "건설자산관리BIM", credits: 3 },
+                { name: "졸업프로젝트(졸업필수)", credits: 2 }
             ],
             "건축공간디자인학과": [
+                { name: "디지털조형연습", credits: 4 },
+                { name: "드로잉과창의계발", credits: 3 },
                 { name: "일러스트레이터실습", credits: 3 },
+                { name: "사진과여행", credits: 3 },
+                { name: "디지털포토그래피", credits: 3 },
+                { name: "아이디어발상과표현", credits: 3 },
+                { name: "캐드실습", credits: 3 },
+                { name: "레이아웃", credits: 3 },
+                { name: "색채실습", credits: 3 },
+                { name: "가상현실스튜디오", credits: 3 },
+                { name: "가구디자인스튜디오", credits: 3 },
+                { name: "공간조형과드로잉", credits: 3 },
                 { name: "공간디자인론", credits: 3 },
+                { name: "디자인조사방법", credits: 3 },
+                { name: "건축학개론", credits: 3 },
+                { name: "디자인사", credits: 3 },
+                { name: "실내디자인", credits: 4 },
+                { name: "색채심리학", credits: 3 },
+                { name: "건축구법", credits: 3 },
+                { name: "생활공예디자인", credits: 3 },
+                { name: "AI디자인", credits: 3 },
+                { name: "인포메이션디자인", credits: 3 },
+                { name: "디스플레이", credits: 3 },
                 { name: "건축디자인", credits: 3 },
-                { name: "건축디자인프로그래밍", credits: 3 },
+                { name: "환경·공공디자인", credits: 4 },
+                { name: "전시디자인스튜디오", credits: 4 },
+                { name: "홈데코레이션", credits: 3 },
+                { name: "3D프린팅&모델링", credits: 3 },
+                { name: "창의벤처디자인", credits: 3 },
+                { name: "공간디자인프로그래밍", credits: 3 },
+                { name: "한국건축과공간문화", credits: 3 },
+                { name: "근현대공간디자인의이해", credits: 3 },
+                { name: "철근콘크리트구조설계", credits: 3 },
+                { name: "브랜드전략과디자인", credits: 3 },
                 { name: "라이프스타일디자인", credits: 3 },
-                { name: "디자인졸업프로젝트(졸업필수)", credits: 2 },
-                { name: "도시계획", credits: 3, isCommon: true },
-                { name: "건축구법", credits: 3, isCommon: true },
-                { name: "친환경건축기술", credits: 3, isCommon: true }
+                { name: "디자인과마케팅", credits: 3 },
+                { name: "디자인졸업프로젝트(건축공간)", credits: 2 },
+                { name: "도시계획", credits: 3 },
+                { name: "친환경건축기술", credits: 3 },
+                { name: "포트폴리오디자인", credits: 3 },
+                { name: "공공디자인", credits: 3 },
+                { name: "4차산업디자인", credits: 4 },
+                { name: "브랜드경험과디자인", credits: 3 }
             ],
             "일반/교양": [
                 { name: "대학글쓰기", credits: 2 },
@@ -436,7 +498,8 @@
         let currentSemKey = '26-봄';
         let semesterTabsList = [];
 
-        let activeTargetIndex = null; // 팝업으로 선택 중인 과목 인덱스
+        let activeTargetIndex = null;
+        let activeModalTab = 'primary'; // primary, double, minor, general
 
         function initApp() {
             populateAdmissionYears();
@@ -517,7 +580,6 @@
             return null;
         }
 
-        // 고정 슬롯 생성 (정규 12칸 / 계절 4칸)
         function ensureDefaultSlotsForTab(semKey) {
             const semObj = semesterTabsList.find(s => s.key === semKey);
             const isSeasonal = semObj ? semObj.isSeasonal : (semKey.includes('여름') || semKey.includes('겨울'));
@@ -530,7 +592,7 @@
                     courses.push({
                         semKey: semKey,
                         name: '',
-                        track: '전공',
+                        track: '미지정',
                         credits: 3,
                         score: null
                     });
@@ -702,32 +764,28 @@
                 tr.className = `border-b border-slate-100 ${isDisabledRow ? 'bg-slate-100 opacity-50' : 'hover:bg-slate-50'}`;
                 tr.innerHTML = `
                     <td class="p-2">
-                        <select onchange="updateCourseTrack(${realIdx}, this.value)" ${isDisabledRow ? 'disabled' : ''} class="w-full border rounded p-1.5 text-xs font-bold ${
-                            c.track === '전공' ? 'text-blue-800 bg-blue-50' :
-                            c.track === '복수전공' ? 'text-indigo-800 bg-indigo-50' :
-                            c.track === '부전공' ? 'text-purple-800 bg-purple-50' :
-                            'text-slate-700 bg-slate-50'
-                        }">
-                            <option value="전공" ${c.track === '전공' ? 'selected' : ''}>주전공</option>
-                            <option value="복수전공" ${c.track === '복수전공' ? 'selected' : ''}>복수전공</option>
-                            <option value="부전공" ${c.track === '부전공' ? 'selected' : ''}>부전공</option>
-                            <option value="일반" ${c.track === '일반' ? 'selected' : ''}>교양/일반</option>
-                        </select>
-                    </td>
-                    <td class="p-2">
-                        <input type="text" readonly value="${c.name || ''}" placeholder="${isDisabledRow ? '입력 제한' : '클릭하여 과목 선택'}" 
+                        <input type="text" readonly value="${c.name || ''}" placeholder="${isDisabledRow ? '입력 제한' : '클릭하여 과목 검색/선택'}" 
                                ${isDisabledRow ? 'disabled' : ''}
                                onclick="openCourseModal(${realIdx})" 
                                class="w-full border rounded p-1.5 text-xs font-medium focus:ring-2 focus:ring-blue-500 cursor-pointer bg-white disabled:bg-slate-200">
                     </td>
                     <td class="p-2 text-center">
-                        <input type="number" value="${c.credits || 3}" min="1" max="6" ${isDisabledRow ? 'disabled' : ''}
-                               onchange="updateCourseCredits(${realIdx}, parseFloat(this.value))" 
-                               class="w-12 border rounded p-1 text-xs text-center disabled:bg-slate-200">
+                        <span class="px-2.5 py-1 rounded text-xs font-bold ${
+                            c.track === '전공' ? 'bg-blue-100 text-blue-800' :
+                            c.track === '공통' ? 'bg-emerald-100 text-emerald-800' :
+                            c.track === '복수전공' ? 'bg-indigo-100 text-indigo-800' :
+                            c.track === '부전공' ? 'bg-purple-100 text-purple-800' :
+                            'bg-slate-100 text-slate-600'
+                        }">
+                            ${c.track || '미지정'}
+                        </span>
+                    </td>
+                    <td class="p-2 text-center font-bold text-slate-700">
+                        ${c.name ? c.credits + '학점' : '-'}
                     </td>
                     <td class="p-2 text-center">
                         <input type="number" step="0.01" value="${c.score !== null && c.score !== undefined ? c.score : ''}" placeholder="점수(0~100)" 
-                               ${isDisabledRow ? 'disabled' : ''}
+                               ${isDisabledRow || !c.name ? 'disabled' : ''}
                                oninput="onScoreInput(${realIdx}, this.value, this)" 
                                class="w-24 border rounded p-1 text-xs text-center font-bold text-blue-700 bg-blue-50/50 focus:bg-white focus:ring-2 focus:ring-blue-500 disabled:bg-slate-200">
                     </td>
@@ -745,25 +803,13 @@
             });
         }
 
-        // 과목 선택 팝업 모달 관리
+        // 팝업 모달 열기 및 탭 전환
         function openCourseModal(idx) {
             activeTargetIndex = idx;
-            const targetTrack = courses[idx].track || '전공';
-            
-            let targetDept = document.getElementById('primaryMajor').value;
-            if (targetTrack === '복수전공') {
-                targetDept = document.getElementById('doubleMajorSelect').value;
-            } else if (targetTrack === '부전공') {
-                targetDept = document.getElementById('minorMajorSelect').value;
-            } else if (targetTrack === '일반') {
-                targetDept = '일반/교양';
-            }
-
-            document.getElementById('modalCategoryTitle').innerText = `${targetTrack} [${targetDept}] 개설 과목 선택`;
-            document.getElementById('modalSearchInput').value = '';
+            activeModalTab = 'primary';
             document.getElementById('courseModal').classList.remove('hidden');
-
-            renderModalCourseList(targetDept);
+            document.getElementById('modalSearchInput').value = '';
+            switchModalTab('primary');
         }
 
         function closeCourseModal() {
@@ -771,9 +817,44 @@
             activeTargetIndex = null;
         }
 
+        function switchModalTab(tabType) {
+            activeModalTab = tabType;
+
+            const tabs = ['primary', 'double', 'minor', 'general'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                if (btn) {
+                    if (t === tabType) {
+                        btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-900 text-white shadow";
+                    } else {
+                        btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200";
+                    }
+                }
+            });
+
+            const primaryDept = document.getElementById('primaryMajor').value;
+            const doubleDept = document.getElementById('doubleMajorSelect').value;
+            const minorDept = document.getElementById('minorMajorSelect').value;
+
+            let deptName = primaryDept;
+            if (tabType === 'double') deptName = doubleDept !== 'none' ? doubleDept : '미선택';
+            if (tabType === 'minor') deptName = minorDept !== 'none' ? minorDept : '미선택';
+            if (tabType === 'general') deptName = '일반/교양';
+
+            const labelEl = document.getElementById('modalDeptInfoLabel');
+            labelEl.innerText = `선택 메뉴: ${tabType === 'primary' ? '주전공' : tabType === 'double' ? '복수전공' : tabType === 'minor' ? '부전공' : '교양일반'} [${deptName}]`;
+
+            renderModalCourseList(deptName);
+        }
+
         function renderModalCourseList(deptName) {
             const listContainer = document.getElementById('modalCourseListContainer');
             listContainer.innerHTML = '';
+
+            if (deptName === '미선택') {
+                listContainer.innerHTML = `<div class="p-6 text-center text-slate-400 text-xs">상단 설정에서 학과가 선택되지 않았습니다.</div>`;
+                return;
+            }
 
             let list = COURSE_DATABASE[deptName] || [];
             if (list.length === 0 && (deptName.includes('건축') || deptName.includes('디자인'))) {
@@ -791,33 +872,60 @@
                 const item = document.createElement('div');
                 item.className = 'p-3 hover:bg-blue-50 cursor-pointer transition flex justify-between items-center text-xs';
                 item.innerHTML = `
-                    <span class="font-bold text-slate-800">${c.name} ${c.isCommon ? '<span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded ml-1">공통</span>' : ''}</span>
+                    <span class="font-bold text-slate-800">${c.name}</span>
                     <span class="text-blue-600 font-semibold">${c.credits}학점</span>
                 `;
                 item.onclick = () => {
-                    selectCourseFromModal(c.name, c.credits, c.isCommon);
+                    selectCourseFromModal(c.name, c.credits);
                 };
                 listContainer.appendChild(item);
             });
         }
 
         function filterModalCourses() {
-            const track = courses[activeTargetIndex].track || '전공';
-            let targetDept = document.getElementById('primaryMajor').value;
-            if (track === '복수전공') targetDept = document.getElementById('doubleMajorSelect').value;
-            if (track === '부전공') targetDept = document.getElementById('minorMajorSelect').value;
-            if (track === '일반') targetDept = '일반/교양';
+            const primaryDept = document.getElementById('primaryMajor').value;
+            const doubleDept = document.getElementById('doubleMajorSelect').value;
+            const minorDept = document.getElementById('minorMajorSelect').value;
 
-            renderModalCourseList(targetDept);
+            let deptName = primaryDept;
+            if (activeModalTab === 'double') deptName = doubleDept !== 'none' ? doubleDept : '미선택';
+            if (activeModalTab === 'minor') deptName = minorDept !== 'none' ? minorDept : '미선택';
+            if (activeModalTab === 'general') deptName = '일반/교양';
+
+            renderModalCourseList(deptName);
         }
 
-        function selectCourseFromModal(name, credits, isCommon) {
+        // 팝업 선택 시 주전공-복수전공 공통 과목 스마트 자동 판정
+        function selectCourseFromModal(name, credits) {
             if (activeTargetIndex !== null) {
                 courses[activeTargetIndex].name = name;
                 courses[activeTargetIndex].credits = credits;
-                if (isCommon) {
+
+                const primaryDept = document.getElementById('primaryMajor').value;
+                const doubleDept = document.getElementById('doubleMajorSelect').value;
+                const minorDept = document.getElementById('minorMajorSelect').value;
+
+                // 주전공 학과 개설 리스트 및 복수전공 학과 개설 리스트에 동시 존재하는지 감지
+                const primaryList = (COURSE_DATABASE[primaryDept] || []).map(x => x.name);
+                const doubleList = doubleDept !== 'none' ? (COURSE_DATABASE[doubleDept] || []).map(x => x.name) : [];
+                const minorList = minorDept !== 'none' ? (COURSE_DATABASE[minorDept] || []).map(x => x.name) : [];
+
+                const inPrimary = primaryList.includes(name);
+                const inDouble = doubleList.includes(name);
+                const inMinor = minorList.includes(name);
+
+                if (inPrimary && inDouble) {
                     courses[activeTargetIndex].track = '공통';
+                } else if (activeModalTab === 'primary' || inPrimary) {
+                    courses[activeTargetIndex].track = '전공';
+                } else if (activeModalTab === 'double' || inDouble) {
+                    courses[activeTargetIndex].track = '복수전공';
+                } else if (activeModalTab === 'minor' || inMinor) {
+                    courses[activeTargetIndex].track = '부전공';
+                } else {
+                    courses[activeTargetIndex].track = '일반';
                 }
+
                 closeCourseModal();
                 renderTable();
                 calculateAll();
@@ -828,6 +936,7 @@
             courses[idx].name = '';
             courses[idx].score = null;
             courses[idx].credits = 3;
+            courses[idx].track = '전공';
             renderTable();
             calculateAll();
         }
@@ -846,26 +955,16 @@
             saveAndRecalculateSilent();
         }
 
-        function updateCourseTrack(idx, val) {
-            courses[idx].track = val;
-            calculateAll();
-        }
-
-        function updateCourseCredits(idx, val) {
-            courses[idx].credits = val;
-            calculateAll();
-        }
-
         function resetToDefault() {
             if (confirm("입력하신 모든 과목 및 학점 데이터가 초기화됩니다. 진행하시겠습니까?")) {
                 courses = [];
-                localStorage.removeItem('hanyang_academic_data_hycu_v12');
+                localStorage.removeItem('hanyang_academic_data_hycu_v14');
                 initApp();
             }
         }
 
         function saveAndRecalculateSilent() {
-            localStorage.setItem('hanyang_academic_data_hycu_v12', JSON.stringify(courses));
+            localStorage.setItem('hanyang_academic_data_hycu_v14', JSON.stringify(courses));
             calculateAll();
         }
 
@@ -908,8 +1007,10 @@
             document.getElementById('statScore').innerText = currentAvgScore.toFixed(1);
             document.getElementById('statTotalCredits').innerText = hycuTakingCredits;
 
+            // 주전공 학점 (전공 + 공통 + 전적대 인정)
             const majorTotal = (creditByTrack['전공'] || 0) + (creditByTrack['공통'] || 0) + tInfo.maj;
-            const doubleTotal = (creditByTrack['복수전공'] || 0);
+            // 복수전공 학점 (복수전공 + 공통)
+            const doubleTotal = (creditByTrack['복수전공'] || 0) + (creditByTrack['공통'] || 0);
             const minorTotal = (creditByTrack['부전공'] || 0);
             const generalTotal = (creditByTrack['일반'] || 0) + tInfo.lib + tInfo.gen;
 
@@ -938,7 +1039,7 @@
 
             const pctTransfer = Math.min(100, (tInfo.total / 140) * 100);
             const pctMajor = Math.min(100, (((creditByTrack['전공'] || 0) + (creditByTrack['공통'] || 0)) / 140) * 100);
-            const pctDouble = Math.min(100, (doubleTotal / 140) * 100);
+            const pctDouble = Math.min(100, ((creditByTrack['복수전공'] || 0) / 140) * 100);
             const pctMinor = Math.min(100, (minorTotal / 140) * 100);
             const pctGeneral = Math.min(100, ((creditByTrack['일반'] || 0) / 140) * 100);
 
