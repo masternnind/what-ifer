@@ -4,7 +4,7 @@ window.HYCU_DATA = {
     maxGpa: "4.5",
     totalGraduationCredits: 140,
     
-    // PDF 기준 100% 공식 부/복수전공 가능 학과 목록
+    // PDF 기반 100% 공식 부/복수전공 가능 학과 명단
     colleges: {
         "공과대학": [
             "건축도시공학과", "국방융합기술학과", "기계제어공학과", "반도체시스템공학과", 
@@ -25,7 +25,7 @@ window.HYCU_DATA = {
         ]
     },
 
-    // 2026 교육과정 개설 교과목 데이터베이스
+    // 2026 교육과정 최신 개설 교과목 DB
     courses: {
         "건축도시공학과": [
             { name: "건축학개론", credits: 3 }, { name: "도시및지역경제", credits: 3 }, { name: "건축3D모델링", credits: 3 },
