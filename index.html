@@ -23,7 +23,7 @@
                 <h1 class="text-2xl font-bold flex items-center gap-2">
                     <i class="fa-solid fa-graduation-cap"></i> <span id="headerUnivTitle">한양사이버대학교</span> 성적 산출 & 졸업 로드맵
                 </h1>
-                <p class="text-blue-200 text-sm mt-1">동일/유사/기타 전공 인정학점 연동 & 색상별 멀티 통합 졸업진단 시스템</p>
+                <p class="text-blue-200 text-sm mt-1">팝업 과목 검색 & 2학점 대비 12슬롯 고정 학기 관리 시스템</p>
             </div>
             <div class="flex gap-2">
                 <button onclick="resetToDefault()" class="px-3 py-2 bg-blue-800 hover:bg-blue-700 rounded text-xs transition flex items-center gap-1">
@@ -35,30 +35,6 @@
             </div>
         </div>
     </header>
-
-    <!-- 최신 교과목 자동완성 Datalist -->
-    <datalist id="hycuCourseList">
-        <option value="건축재료">
-        <option value="건축시공">
-        <option value="건축구조역학">
-        <option value="BIM통합설계프로젝트1(PBL)">
-        <option value="도시주택경제론">
-        <option value="철근콘크리트구조설계">
-        <option value="친환경건축기술">
-        <option value="건축설계실무">
-        <option value="건설계약및클레임">
-        <option value="건축도시방재">
-        <option value="넥스트시티">
-        <option value="졸업프로젝트(졸업필수)">
-        <option value="도시계획">
-        <option value="건축구법">
-        <option value="일러스트레이터실습">
-        <option value="공간디자인론">
-        <option value="건축디자인">
-        <option value="건축디자인프로그래밍">
-        <option value="라이프스타일디자인">
-        <option value="디자인졸업프로젝트(졸업필수)">
-    </datalist>
 
     <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 print-container">
         
@@ -88,7 +64,7 @@
                         </select>
                     </div>
 
-                    <!-- 2. 입학 학년 구분 (1학년 신입 / 2학년 편입 / 3학년 편입) -->
+                    <!-- 2. 입학 학년 구분 -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">2. 입학 학년 구분</label>
                         <select id="admissionType" onchange="onAdmissionTypeChange()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 font-bold text-blue-900 bg-white">
@@ -98,7 +74,7 @@
                         </select>
                     </div>
 
-                    <!-- 3. 편입 전공 분류 (동일전공 / 유사전공 / 기타전공) -->
+                    <!-- 3. 편입 전공 분류 -->
                     <div>
                         <label class="block text-xs font-bold text-blue-900 mb-1">3. 편입 전공 분류</label>
                         <select id="transferMajorCategory" onchange="onProfileChange()" class="w-full border-blue-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 font-bold text-blue-900 bg-blue-50">
@@ -202,15 +178,12 @@
                 <div class="flex justify-between items-center mb-3">
                     <div>
                         <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-list-check text-blue-600"></i> <span id="currentActiveTabTitle">3학년 1학기(봄)</span> 과목 입력란
+                            <i class="fa-solid fa-list-check text-blue-600"></i> <span id="currentActiveTabTitle">3학년 1학기(봄)</span> 수강 입력란
                         </h3>
                         <p class="text-[11px] font-semibold text-blue-800 mt-0.5" id="semesterLimitGuideText">
                             <!-- Dynamic Guide -->
                         </p>
                     </div>
-                    <button id="addRowBtn" onclick="addCourseToCurrentTab()" class="no-print text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-3 py-1.5 rounded-lg font-semibold transition">
-                        + 줄 추가
-                    </button>
                 </div>
 
                 <div id="seasonalBlockWarning" class="hidden mb-3 p-3 bg-amber-50 border border-amber-300 text-amber-900 text-xs rounded-lg font-semibold">
@@ -218,20 +191,20 @@
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs min-w-[600px]">
+                    <table class="w-full text-left text-xs min-w-[650px]">
                         <thead class="bg-slate-100 text-slate-700 uppercase">
                             <tr>
-                                <th class="p-2 border-b w-2/5">과목명 (수업명)</th>
-                                <th class="p-2 border-b w-28">자동 이수구분</th>
+                                <th class="p-2 border-b w-28">이수구분</th>
+                                <th class="p-2 border-b w-2/5">과목명 (수업 검색 선택)</th>
                                 <th class="p-2 border-b text-center w-16">학점</th>
                                 <th class="p-2 border-b text-center w-28">백분율(점수)</th>
-                                <th class="p-2 border-b text-center w-20">자동 등급</th>
-                                <th class="p-2 border-b text-center w-20">자동 평점</th>
-                                <th class="p-2 border-b text-center w-12 no-print">삭제</th>
+                                <th class="p-2 border-b text-center w-16">자동 등급</th>
+                                <th class="p-2 border-b text-center w-16">자동 평점</th>
+                                <th class="p-2 border-b text-center w-12 no-print">초기화</th>
                             </tr>
                         </thead>
                         <tbody id="courseTableBody" class="divide-y divide-slate-100">
-                            <!-- Dynamic Course Rows -->
+                            <!-- Dynamic 12 or 4 Fixed Rows -->
                         </tbody>
                     </table>
                 </div>
@@ -292,7 +265,7 @@
                     <div id="doubleMajorBox" class="hidden">
                         <div class="flex justify-between font-semibold mb-1">
                             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span> 복수전공 학점</span>
-                            <span id="doubleProgressText">0 / 36 학점</span>
+                            <span id="doubleProgressText">0 / 35 학점</span>
                         </div>
                         <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
                             <div id="doubleProgressBar" class="bg-indigo-500 h-full w-0 transition-all duration-300"></div>
@@ -327,7 +300,6 @@
                             <span>총 졸업학점 누적 (목표: 140학점)</span>
                             <span id="totalProgressText">0 / 140 학점 (0%)</span>
                         </div>
-                        <!-- 색상별 멀티 스택 프로그레스 바 -->
                         <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden flex">
                             <div id="barSegmentTransfer" class="bg-blue-600 h-full transition-all duration-300" title="전적대 인정학점"></div>
                             <div id="barSegmentMajor" class="bg-emerald-500 h-full transition-all duration-300" title="주전공 취득"></div>
@@ -359,33 +331,70 @@
         </section>
     </main>
 
+    <!-- 과목 선택 팝업창 (Modal) -->
+    <div id="courseModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
+        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 mx-4 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-blue-600"></i> <span id="modalCategoryTitle">개설 교과목 선택</span>
+                </h3>
+                <button onclick="closeCourseModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+            </div>
+
+            <!-- 과목 검색 필터 입력란 -->
+            <div>
+                <input type="text" id="modalSearchInput" oninput="filterModalCourses()" placeholder="과목명을 입력하세요 (예: 건축, 시공, 디자인...)" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- 과목 목록 선택 리스트 -->
+            <div id="modalCourseListContainer" class="max-h-64 overflow-y-auto divide-y divide-slate-100 border rounded-lg">
+                <!-- Dynamic Course List -->
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2 border-t">
+                <button onclick="closeCourseModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded-lg font-semibold">취소</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const COURSE_DATABASE = {
-            "건축재료": { depts: ["건축도시공학과"] },
-            "건축시공": { depts: ["건축도시공학과"] },
-            "건축구조역학": { depts: ["건축도시공학과"] },
-            "BIM통합설계프로젝트1(PBL)": { depts: ["건축도시공학과"] },
-            "도시주택경제론": { depts: ["건축도시공학과"] },
-            "철근콘크리트구조설계": { depts: ["건축도시공학과"] },
-            "건축설계실무": { depts: ["건축도시공학과"] },
-            "건설계약및클레임": { depts: ["건축도시공학과"] },
-            "건축도시방재": { depts: ["건축도시공학과"] },
-            "넥스트시티": { depts: ["건축도시공학과"] },
-            "졸업프로젝트(졸업필수)": { depts: ["건축도시공학과"] },
-
-            "일러스트레이터실습": { depts: ["건축공간디자인학과"] },
-            "공간디자인론": { depts: ["건축공간디자인학과"] },
-            "건축디자인": { depts: ["건축공간디자인학과"] },
-            "건축디자인프로그래밍": { depts: ["건축공간디자인학과"] },
-            "라이프스타일디자인": { depts: ["건축공간디자인학과"] },
-            "디자인졸업프로젝트(졸업필수)": { depts: ["건축공간디자인학과"] },
-
-            "도시계획": { depts: ["건축도시공학과", "건축공간디자인학과"], isCommon: true },
-            "건축구법": { depts: ["건축도시공학과", "건축공간디자인학과"], isCommon: true },
-            "친환경건축기술": { depts: ["건축도시공학과", "건축공간디자인학과"], isCommon: true }
+            "건축도시공학과": [
+                { name: "건축재료", credits: 3 },
+                { name: "건축시공", credits: 3 },
+                { name: "건축구조역학", credits: 3 },
+                { name: "BIM통합설계프로젝트1(PBL)", credits: 3 },
+                { name: "도시주택경제론", credits: 3 },
+                { name: "철근콘크리트구조설계", credits: 3 },
+                { name: "건축설계실무", credits: 3 },
+                { name: "건설계약및클레임", credits: 3 },
+                { name: "건축도시방재", credits: 3 },
+                { name: "넥스트시티", credits: 3 },
+                { name: "졸업프로젝트(졸업필수)", credits: 2 },
+                { name: "도시계획", credits: 3, isCommon: true },
+                { name: "건축구법", credits: 3, isCommon: true },
+                { name: "친환경건축기술", credits: 3, isCommon: true }
+            ],
+            "건축공간디자인학과": [
+                { name: "일러스트레이터실습", credits: 3 },
+                { name: "공간디자인론", credits: 3 },
+                { name: "건축디자인", credits: 3 },
+                { name: "건축디자인프로그래밍", credits: 3 },
+                { name: "라이프스타일디자인", credits: 3 },
+                { name: "디자인졸업프로젝트(졸업필수)", credits: 2 },
+                { name: "도시계획", credits: 3, isCommon: true },
+                { name: "건축구법", credits: 3, isCommon: true },
+                { name: "친환경건축기술", credits: 3, isCommon: true }
+            ],
+            "일반/교양": [
+                { name: "대학글쓰기", credits: 2 },
+                { name: "컴퓨터활용실습", credits: 2 },
+                { name: "기초영어", credits: 2 },
+                { name: "현대사회와윤리", credits: 3 },
+                { name: "경영학개론", credits: 3 }
+            ]
         };
 
-        // 전적대학 전공분류별 인정학점 명세표
         const TRANSFER_CREDIT_MATRIX = {
             'transfer_2': {
                 'same': { lib: 18, maj: 12, gen: 5, total: 35 },
@@ -426,6 +435,8 @@
         let currentSeason = '봄';
         let currentSemKey = '26-봄';
         let semesterTabsList = [];
+
+        let activeTargetIndex = null; // 팝업으로 선택 중인 과목 인덱스
 
         function initApp() {
             populateAdmissionYears();
@@ -506,10 +517,11 @@
             return null;
         }
 
+        // 고정 슬롯 생성 (정규 12칸 / 계절 4칸)
         function ensureDefaultSlotsForTab(semKey) {
             const semObj = semesterTabsList.find(s => s.key === semKey);
             const isSeasonal = semObj ? semObj.isSeasonal : (semKey.includes('여름') || semKey.includes('겨울'));
-            const targetSlotCount = isSeasonal ? 3 : 8;
+            const targetSlotCount = isSeasonal ? 4 : 12;
 
             const existingCount = courses.filter(c => c.semKey === semKey).length;
             if (existingCount < targetSlotCount) {
@@ -518,7 +530,7 @@
                     courses.push({
                         semKey: semKey,
                         name: '',
-                        track: '일반',
+                        track: '전공',
                         credits: 3,
                         score: null
                     });
@@ -638,55 +650,16 @@
             const prevGpa = getPrevRegularSemesterGpa(currentSemKey);
 
             if (isSeasonal) {
-                document.getElementById('semesterLimitGuideText').innerText = '※ 계절학기 기본 입력란 3칸 제공 (정규학기 24학점 완충 시 계절학기 수강 불가)';
+                document.getElementById('semesterLimitGuideText').innerText = '※ 계절학기 고정 4칸 제공 (2학점 과목 포함 최대 9학점 작성 가능)';
             } else {
                 if (prevGpa === null) {
-                    document.getElementById('semesterLimitGuideText').innerText = '※ 직전 학기 기록 없음 (첫 학기): 최대 24학점 (8칸 전원 작성 가능)';
+                    document.getElementById('semesterLimitGuideText').innerText = '※ 직전 학기 기록 없음 (첫 학기): 최대 24학점 (고정 12칸 작성 가능)';
                 } else if (prevGpa >= 3.0) {
-                    document.getElementById('semesterLimitGuideText').innerText = `※ 직전 학기 평점 ${prevGpa.toFixed(2)} (3.0 이상 성적우수): 최대 24학점 (8칸 전원 작성 가능)`;
+                    document.getElementById('semesterLimitGuideText').innerText = `※ 직전 학기 평점 ${prevGpa.toFixed(2)} (3.0 이상 성적우수): 최대 24학점 (12칸 작성 가능)`;
                 } else {
-                    document.getElementById('semesterLimitGuideText').innerText = `※ 직전 학기 평점 ${prevGpa.toFixed(2)} (3.0 미만): 최대 18학점 제한 (7~8번째 칸 입력 자동 차단)`;
+                    document.getElementById('semesterLimitGuideText').innerText = `※ 직전 학기 평점 ${prevGpa.toFixed(2)} (3.0 미만): 최대 18학점 제한 (10~12번째 칸 입력 자동 차단)`;
                 }
             }
-        }
-
-        function evaluateCourseTrack(courseName) {
-            if (!courseName || courseName.trim() === '') return '일반';
-
-            const trimmedName = courseName.trim();
-            const courseInfo = COURSE_DATABASE[trimmedName];
-
-            const primaryDept = document.getElementById('primaryMajor').value;
-            const doubleDept = document.getElementById('doubleMajorSelect').value;
-            const minorDept = document.getElementById('minorMajorSelect').value;
-
-            if (courseInfo) {
-                if (courseInfo.isCommon) {
-                    if (courseInfo.depts.includes(primaryDept)) {
-                        return '공통';
-                    }
-                }
-
-                if (courseInfo.depts.includes(primaryDept)) {
-                    return '전공';
-                }
-
-                if (doubleDept !== 'none' && courseInfo.depts.includes(doubleDept)) {
-                    return '복수전공';
-                }
-
-                if (minorDept !== 'none' && courseInfo.depts.includes(minorDept)) {
-                    return '부전공';
-                }
-            }
-
-            if (primaryDept.includes('건축') || primaryDept.includes('디자인')) {
-                if (trimmedName.includes('건축') || trimmedName.includes('디자인') || trimmedName.includes('시공') || trimmedName.includes('구조') || trimmedName.includes('BIM')) {
-                    return '전공';
-                }
-            }
-
-            return '일반';
         }
 
         function renderTable() {
@@ -709,14 +682,11 @@
 
             const isSeasonalBlocked = isSeasonal && (regCreditsInYear >= 24);
             const seasonalWarnBox = document.getElementById('seasonalBlockWarning');
-            const addBtn = document.getElementById('addRowBtn');
 
             if (isSeasonalBlocked) {
                 seasonalWarnBox.classList.remove('hidden');
-                if (addBtn) addBtn.disabled = true;
             } else {
                 seasonalWarnBox.classList.add('hidden');
-                if (addBtn) addBtn.disabled = false;
             }
 
             const currentCourses = courses.filter(c => c.semKey === currentSemKey);
@@ -725,31 +695,30 @@
                 const realIdx = courses.indexOf(c);
                 const evalGrade = getGradeFromScore(c.score);
 
-                const autoTrack = evaluateCourseTrack(c.name);
-                courses[realIdx].track = autoTrack;
-
-                const isRegDisabled = !isSeasonal && (prevGpa !== null && prevGpa < 3.0) && indexInTab >= 6;
+                const isRegDisabled = !isSeasonal && (prevGpa !== null && prevGpa < 3.0) && indexInTab >= 9;
                 const isDisabledRow = isSeasonalBlocked || isRegDisabled;
 
                 const tr = document.createElement('tr');
                 tr.className = `border-b border-slate-100 ${isDisabledRow ? 'bg-slate-100 opacity-50' : 'hover:bg-slate-50'}`;
                 tr.innerHTML = `
                     <td class="p-2">
-                        <input type="text" list="hycuCourseList" value="${c.name || ''}" placeholder="${isDisabledRow ? '입력 제한' : '과목명 검색 (예: 건축시공)'}" 
-                               ${isDisabledRow ? 'disabled' : ''}
-                               oninput="updateCourseName(${realIdx}, this.value)" 
-                               class="w-full border rounded p-1.5 text-xs font-medium focus:ring-1 focus:ring-blue-500 disabled:bg-slate-200">
+                        <select onchange="updateCourseTrack(${realIdx}, this.value)" ${isDisabledRow ? 'disabled' : ''} class="w-full border rounded p-1.5 text-xs font-bold ${
+                            c.track === '전공' ? 'text-blue-800 bg-blue-50' :
+                            c.track === '복수전공' ? 'text-indigo-800 bg-indigo-50' :
+                            c.track === '부전공' ? 'text-purple-800 bg-purple-50' :
+                            'text-slate-700 bg-slate-50'
+                        }">
+                            <option value="전공" ${c.track === '전공' ? 'selected' : ''}>주전공</option>
+                            <option value="복수전공" ${c.track === '복수전공' ? 'selected' : ''}>복수전공</option>
+                            <option value="부전공" ${c.track === '부전공' ? 'selected' : ''}>부전공</option>
+                            <option value="일반" ${c.track === '일반' ? 'selected' : ''}>교양/일반</option>
+                        </select>
                     </td>
                     <td class="p-2">
-                        <span class="px-2 py-1 rounded text-xs font-bold ${
-                            autoTrack === '전공' ? 'bg-blue-100 text-blue-800' :
-                            autoTrack === '공통' ? 'bg-emerald-100 text-emerald-800' :
-                            autoTrack === '복수전공' ? 'bg-indigo-100 text-indigo-800' :
-                            autoTrack === '부전공' ? 'bg-purple-100 text-purple-800' :
-                            'bg-slate-100 text-slate-600'
-                        }" id="track-label-${realIdx}">
-                            ${autoTrack}
-                        </span>
+                        <input type="text" readonly value="${c.name || ''}" placeholder="${isDisabledRow ? '입력 제한' : '클릭하여 과목 선택'}" 
+                               ${isDisabledRow ? 'disabled' : ''}
+                               onclick="openCourseModal(${realIdx})" 
+                               class="w-full border rounded p-1.5 text-xs font-medium focus:ring-2 focus:ring-blue-500 cursor-pointer bg-white disabled:bg-slate-200">
                     </td>
                     <td class="p-2 text-center">
                         <input type="number" value="${c.credits || 3}" min="1" max="6" ${isDisabledRow ? 'disabled' : ''}
@@ -769,11 +738,98 @@
                         ${evalGrade.gpa !== null ? evalGrade.gpa.toFixed(1) : '-'}
                     </td>
                     <td class="p-2 text-center no-print">
-                        <button onclick="deleteCourse(${realIdx})" ${isDisabledRow ? 'disabled' : ''} class="text-red-400 hover:text-red-600 px-1 disabled:text-slate-300"><i class="fa-solid fa-trash-can"></i></button>
+                        <button onclick="clearRow(${realIdx})" ${isDisabledRow ? 'disabled' : ''} class="text-slate-400 hover:text-red-500 px-1 disabled:text-slate-300"><i class="fa-solid fa-rotate-left"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        // 과목 선택 팝업 모달 관리
+        function openCourseModal(idx) {
+            activeTargetIndex = idx;
+            const targetTrack = courses[idx].track || '전공';
+            
+            let targetDept = document.getElementById('primaryMajor').value;
+            if (targetTrack === '복수전공') {
+                targetDept = document.getElementById('doubleMajorSelect').value;
+            } else if (targetTrack === '부전공') {
+                targetDept = document.getElementById('minorMajorSelect').value;
+            } else if (targetTrack === '일반') {
+                targetDept = '일반/교양';
+            }
+
+            document.getElementById('modalCategoryTitle').innerText = `${targetTrack} [${targetDept}] 개설 과목 선택`;
+            document.getElementById('modalSearchInput').value = '';
+            document.getElementById('courseModal').classList.remove('hidden');
+
+            renderModalCourseList(targetDept);
+        }
+
+        function closeCourseModal() {
+            document.getElementById('courseModal').classList.add('hidden');
+            activeTargetIndex = null;
+        }
+
+        function renderModalCourseList(deptName) {
+            const listContainer = document.getElementById('modalCourseListContainer');
+            listContainer.innerHTML = '';
+
+            let list = COURSE_DATABASE[deptName] || [];
+            if (list.length === 0 && (deptName.includes('건축') || deptName.includes('디자인'))) {
+                list = COURSE_DATABASE["건축도시공학과"].concat(COURSE_DATABASE["건축공간디자인학과"]);
+            }
+            if (list.length === 0) {
+                list = COURSE_DATABASE["일반/교양"];
+            }
+
+            const searchKey = document.getElementById('modalSearchInput').value.trim().toLowerCase();
+
+            list.forEach(c => {
+                if (searchKey !== '' && !c.name.toLowerCase().includes(searchKey)) return;
+
+                const item = document.createElement('div');
+                item.className = 'p-3 hover:bg-blue-50 cursor-pointer transition flex justify-between items-center text-xs';
+                item.innerHTML = `
+                    <span class="font-bold text-slate-800">${c.name} ${c.isCommon ? '<span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded ml-1">공통</span>' : ''}</span>
+                    <span class="text-blue-600 font-semibold">${c.credits}학점</span>
+                `;
+                item.onclick = () => {
+                    selectCourseFromModal(c.name, c.credits, c.isCommon);
+                };
+                listContainer.appendChild(item);
+            });
+        }
+
+        function filterModalCourses() {
+            const track = courses[activeTargetIndex].track || '전공';
+            let targetDept = document.getElementById('primaryMajor').value;
+            if (track === '복수전공') targetDept = document.getElementById('doubleMajorSelect').value;
+            if (track === '부전공') targetDept = document.getElementById('minorMajorSelect').value;
+            if (track === '일반') targetDept = '일반/교양';
+
+            renderModalCourseList(targetDept);
+        }
+
+        function selectCourseFromModal(name, credits, isCommon) {
+            if (activeTargetIndex !== null) {
+                courses[activeTargetIndex].name = name;
+                courses[activeTargetIndex].credits = credits;
+                if (isCommon) {
+                    courses[activeTargetIndex].track = '공통';
+                }
+                closeCourseModal();
+                renderTable();
+                calculateAll();
+            }
+        }
+
+        function clearRow(idx) {
+            courses[idx].name = '';
+            courses[idx].score = null;
+            courses[idx].credits = 3;
+            renderTable();
+            calculateAll();
         }
 
         function onScoreInput(idx, val, inputEl) {
@@ -790,24 +846,9 @@
             saveAndRecalculateSilent();
         }
 
-        function updateCourseName(idx, val) {
-            courses[idx].name = val;
-            const autoTrack = evaluateCourseTrack(val);
-            courses[idx].track = autoTrack;
-
-            const trackLbl = document.getElementById(`track-label-${idx}`);
-            if (trackLbl) {
-                trackLbl.innerText = autoTrack;
-                trackLbl.className = `px-2 py-1 rounded text-xs font-bold ${
-                    autoTrack === '전공' ? 'bg-blue-100 text-blue-800' :
-                    autoTrack === '공통' ? 'bg-emerald-100 text-emerald-800' :
-                    autoTrack === '복수전공' ? 'bg-indigo-100 text-indigo-800' :
-                    autoTrack === '부전공' ? 'bg-purple-100 text-purple-800' :
-                    'bg-slate-100 text-slate-600'
-                }`;
-            }
-
-            saveAndRecalculateSilent();
+        function updateCourseTrack(idx, val) {
+            courses[idx].track = val;
+            calculateAll();
         }
 
         function updateCourseCredits(idx, val) {
@@ -815,28 +856,16 @@
             calculateAll();
         }
 
-        function addCourseToCurrentTab() {
-            courses.push({ semKey: currentSemKey, name: '', track: '일반', credits: 3, score: null });
-            renderTable();
-            calculateAll();
-        }
-
-        function deleteCourse(idx) {
-            courses.splice(idx, 1);
-            renderTable();
-            calculateAll();
-        }
-
         function resetToDefault() {
             if (confirm("입력하신 모든 과목 및 학점 데이터가 초기화됩니다. 진행하시겠습니까?")) {
                 courses = [];
-                localStorage.removeItem('hanyang_academic_data_hycu_v11');
+                localStorage.removeItem('hanyang_academic_data_hycu_v12');
                 initApp();
             }
         }
 
         function saveAndRecalculateSilent() {
-            localStorage.setItem('hanyang_academic_data_hycu_v11', JSON.stringify(courses));
+            localStorage.setItem('hanyang_academic_data_hycu_v12', JSON.stringify(courses));
             calculateAll();
         }
 
@@ -879,22 +908,19 @@
             document.getElementById('statScore').innerText = currentAvgScore.toFixed(1);
             document.getElementById('statTotalCredits').innerText = hycuTakingCredits;
 
-            // 주전공 학점 (전공 + 공통 + 전적대전공인정)
             const majorTotal = (creditByTrack['전공'] || 0) + (creditByTrack['공통'] || 0) + tInfo.maj;
             const doubleTotal = (creditByTrack['복수전공'] || 0);
             const minorTotal = (creditByTrack['부전공'] || 0);
             const generalTotal = (creditByTrack['일반'] || 0) + tInfo.lib + tInfo.gen;
 
-            // 멀티 스택 프로그레스 바 영역별 학점 수치
             const grandTotalCredits = tInfo.total + hycuTakingCredits;
 
             updateBar('major', majorTotal, 35);
 
-            // 복수전공 / 부전공 박스 표시 제어
             const doubleBox = document.getElementById('doubleMajorBox');
             if (doubleSelect !== 'none') {
                 doubleBox.classList.remove('hidden');
-                updateBar('double', doubleTotal, 36);
+                updateBar('double', doubleTotal, 35);
             } else {
                 doubleBox.classList.add('hidden');
             }
@@ -910,12 +936,11 @@
             document.getElementById('generalProgressText').innerText = `${generalTotal} 학점`;
             document.getElementById('generalProgressBar').style.width = `${Math.min(100, (generalTotal / 70) * 100)}%`;
 
-            // 총 졸업학점 140 기준 색상별 멀티 스택 바 비율 계산
             const pctTransfer = Math.min(100, (tInfo.total / 140) * 100);
-            const pctMajor = Math.min(100, ((creditByTrack['전공'] + creditByTrack['공통']) / 140) * 100);
+            const pctMajor = Math.min(100, (((creditByTrack['전공'] || 0) + (creditByTrack['공통'] || 0)) / 140) * 100);
             const pctDouble = Math.min(100, (doubleTotal / 140) * 100);
             const pctMinor = Math.min(100, (minorTotal / 140) * 100);
-            const pctGeneral = Math.min(100, ((creditByTrack['일반']) / 140) * 100);
+            const pctGeneral = Math.min(100, ((creditByTrack['일반'] || 0) / 140) * 100);
 
             document.getElementById('barSegmentTransfer').style.width = `${pctTransfer}%`;
             document.getElementById('barSegmentMajor').style.width = `${pctMajor}%`;
@@ -926,7 +951,6 @@
             const totalPctNum = Math.min(100, Math.round((grandTotalCredits / 140) * 100));
             document.getElementById('totalProgressText').innerText = `${grandTotalCredits} / 140 학점 (${totalPctNum}%)`;
 
-            // 졸업 요건 종합 판단
             const statusBox = document.getElementById('graduationStatusBox');
             const requiredHycuCredits = 140 - tInfo.total;
             let isHycuRequirementMet = hycuTakingCredits >= requiredHycuCredits && grandTotalCredits >= 140;
@@ -961,10 +985,10 @@
                 const val = semesterCredits[sem.key] || 0;
                 if (val > 0) {
                     hasSemesterData = true;
-                    const maxLimit = sem.isSeasonal ? 6 : 24;
+                    const maxLimit = sem.isSeasonal ? 9 : 24;
                     const isOk = val <= maxLimit;
                     
-                    let limitNote = sem.isSeasonal ? '(최대 6학점)' : (val > 18 ? '(성적우수 초과이수)' : '(18학점 이내)');
+                    let limitNote = sem.isSeasonal ? '(최대 9학점)' : (val > 18 ? '(성적우수 초과이수)' : '(18학점 이내)');
 
                     const li = document.createElement('li');
                     li.className = "flex justify-between py-0.5 border-b border-slate-100";
