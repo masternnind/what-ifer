@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>한양사이버대학교 성적 관리 & 학기별 졸업 로드맵</title>
+    <title>성적 관리 & 학기별 졸업 로드맵</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- 대학별 외부 데이터 파일 불러오기 -->
+    <!-- 대학별 설정을 담은 외부 JS (기본: 한양사이버대) -->
     <script src="uni/hycu.js"></script>
 
     <style>
@@ -25,7 +25,7 @@
         <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-2xl font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-graduation-cap"></i> <span id="headerUnivTitle">한양사이버대학교</span> 성적 산출 & 졸업 로드맵
+                    <i class="fa-solid fa-graduation-cap"></i> <span id="headerUnivTitle">대학교</span> 성적 산출 & 졸업 로드맵
                 </h1>
                 <p class="text-blue-200 text-sm mt-1">팝업창 전공별 과목 선택 & 주전공-복수전공 공통 과목 자동 판정 시스템</p>
             </div>
@@ -42,10 +42,9 @@
 
     <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 print-container">
         
-        <!-- 좌측: 설정 및 학기별 탭 입력 영역 -->
+        <!-- 좌측 영역 -->
         <section class="lg:col-span-7 space-y-6">
             
-            <!-- 1. 학적 및 전공/부복수전공 설정 -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                 <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2 border-b pb-3">
                     <i class="fa-solid fa-user-gear text-blue-600"></i> 1. 학적 및 전공 구분 설정
@@ -54,7 +53,7 @@
                 <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex justify-between items-center">
                     <div>
                         <label class="block text-xs font-bold text-blue-900">소속 대학교</label>
-                        <span class="text-sm font-extrabold text-blue-950">🏛️ 한양사이버대학교 (졸업요건: 총 140학점)</span>
+                        <span class="text-sm font-extrabold text-blue-950" id="univBannerLabel">🏛️ 대학교 (졸업요건: 총 0학점)</span>
                     </div>
                     <span class="bg-blue-200 text-blue-900 text-xs px-2.5 py-1 rounded-full font-bold">공통 과목 자동 분류</span>
                 </div>
@@ -71,9 +70,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">2. 입학 학년 구분</label>
                         <select id="admissionType" onchange="onAdmissionTypeChange()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 font-bold text-blue-900 bg-white">
-                            <option value="freshman">1학년 신입학</option>
-                            <option value="transfer_2">2학년 편입학 (35학점 인정)</option>
-                            <option value="transfer_3" selected>3학년 편입학 (70학점 인정)</option>
+                            <!-- JS에서 동적 생성 -->
                         </select>
                     </div>
 
@@ -91,21 +88,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">4. 주전공 학과</label>
                         <select id="primaryMajor" onchange="calculateAll()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
-                            <optgroup label="디자인학부/공과대학">
-                                <option value="건축도시공학과" selected>건축도시공학과</option>
-                                <option value="건축공간디자인학과">건축공간디자인학과</option>
-                                <option value="뉴미디어디자인학과">뉴미디어디자인학과</option>
-                                <option value="시각디자인학과">시각디자인학과</option>
-                                <option value="예술문화디자인학과">예술문화디자인학과</option>
-                                <option value="AI산업디자인학과">AI산업디자인학과</option>
-                                <option value="컴퓨터공학과">컴퓨터공학과</option>
-                            </optgroup>
-                            <optgroup label="인문사회/융합경영대학">
-                                <option value="사회복지학과">사회복지학과</option>
-                                <option value="상담심리학과">상담심리학과</option>
-                                <option value="부동산학과">부동산학과</option>
-                                <option value="경영정보·AI비즈니스학과">경영정보·AI비즈니스학과</option>
-                            </optgroup>
+                            <!-- JS에서 동적 생성 -->
                         </select>
                     </div>
 
@@ -113,13 +96,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">5. 복수전공 학과</label>
                         <select id="doubleMajorSelect" onchange="calculateAll()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
-                            <option value="none">해당 없음</option>
-                            <option value="건축공간디자인학과" selected>건축공간디자인학과</option>
-                            <option value="건축도시공학과">건축도시공학과</option>
-                            <option value="뉴미디어디자인학과">뉴미디어디자인학과</option>
-                            <option value="시각디자인학과">시각디자인학과</option>
-                            <option value="컴퓨터공학과">컴퓨터공학과</option>
-                            <option value="부동산학과">부동산학과</option>
+                            <!-- JS에서 동적 생성 -->
                         </select>
                     </div>
 
@@ -127,17 +104,13 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">6. 부전공 학과</label>
                         <select id="minorMajorSelect" onchange="calculateAll()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
-                            <option value="none" selected>해당 없음</option>
-                            <option value="건축도시공학과">건축도시공학과</option>
-                            <option value="건축공간디자인학과">건축공간디자인학과</option>
-                            <option value="컴퓨터공학과">컴퓨터공학과</option>
-                            <option value="부동산학과">부동산학과</option>
+                            <!-- JS에서 동적 생성 -->
                         </select>
                     </div>
                 </div>
             </div>
 
-            <!-- 세부 인정학점 안내 카드 -->
+            <!-- 전적대학 인정 학점 안내 카드 -->
             <div id="transferCreditsInfoCard" class="bg-blue-50 border border-blue-200 rounded-xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center text-xs gap-3">
                 <div>
                     <span class="font-bold text-blue-900 text-sm block mb-1">🎓 전적대학 항목별 인정학점 현황</span>
@@ -146,32 +119,26 @@
                 </div>
                 <div class="text-right whitespace-nowrap">
                     <span class="text-xs text-blue-700 block">총 인정 학점</span>
-                    <span id="transferCreditsBadge" class="text-2xl font-black text-blue-900">70</span>
+                    <span id="transferCreditsBadge" class="text-2xl font-black text-blue-900">0</span>
                     <span class="text-blue-800 font-bold"> 학점</span>
                 </div>
             </div>
 
-            <!-- 2. 학년/학기 2단계 탭 UI 및 과목 입력 -->
+            <!-- 과목 입력 표 -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                
-                <!-- 1단계: 학년 선택 탭 -->
                 <div class="border-b border-slate-200 pb-2 mb-3">
                     <span class="text-xs font-bold text-slate-500 block mb-1">학년 선택</span>
-                    <div class="flex space-x-2" id="gradeTabContainer">
-                    </div>
+                    <div class="flex space-x-2" id="gradeTabContainer"></div>
                 </div>
 
-                <!-- 2단계: 학기 선택 서브 탭 -->
-                <div class="bg-slate-100 p-1.5 rounded-lg mb-4 flex space-x-1" id="semesterSubTabContainer">
-                </div>
+                <div class="bg-slate-100 p-1.5 rounded-lg mb-4 flex space-x-1" id="semesterSubTabContainer"></div>
 
                 <div class="flex justify-between items-center mb-3">
                     <div>
                         <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-list-check text-blue-600"></i> <span id="currentActiveTabTitle">3학년 1학기(봄)</span> 수강 입력란
                         </h3>
-                        <p class="text-[11px] font-semibold text-blue-800 mt-0.5" id="semesterLimitGuideText">
-                        </p>
+                        <p class="text-[11px] font-semibold text-blue-800 mt-0.5" id="semesterLimitGuideText"></p>
                     </div>
                 </div>
 
@@ -192,23 +159,22 @@
                                 <th class="p-2 border-b text-center w-12 no-print">초기화</th>
                             </tr>
                         </thead>
-                        <tbody id="courseTableBody" class="divide-y divide-slate-100">
-                        </tbody>
+                        <tbody id="courseTableBody" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- 우측: 실시간 대시보드 및 졸업 진단 -->
+        <!-- 우측: 요약 및 진단 영역 -->
         <section class="lg:col-span-5 space-y-6">
             
-            <!-- GPA 요약 카운터 -->
+            <!-- GPA 요약 -->
             <div class="bg-gradient-to-br from-blue-900 to-indigo-900 text-white rounded-xl p-6 shadow-md">
                 <h3 class="text-xs uppercase tracking-wider text-blue-200 font-semibold mb-4">현재 본교 취득 학점 및 평점 (GPA)</h3>
                 <div class="grid grid-cols-3 gap-2 text-center">
                     <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
                         <span class="block text-2xl font-black text-white" id="statGpa">0.00</span>
-                        <span class="text-[10px] text-blue-200">평균 평점 (/ 4.5)</span>
+                        <span class="text-[10px] text-blue-200" id="statGpaMaxLabel">평균 평점 (/ 4.5)</span>
                     </div>
                     <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
                         <span class="block text-2xl font-black text-amber-300" id="statScore">0.0</span>
@@ -221,23 +187,21 @@
                 </div>
             </div>
 
-            <!-- 조기졸업 및 졸업 가능 여부 판정 -->
+            <!-- 진단 상자 -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                 <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                     <i class="fa-solid fa-award text-amber-500"></i> 졸업 및 조기졸업 자격 진단
                 </h3>
-                <div id="graduationStatusBox" class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs space-y-2">
-                </div>
+                <div id="graduationStatusBox" class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs space-y-2"></div>
             </div>
 
-            <!-- 졸업 기준 학점 충족도 -->
+            <!-- 프로그레스 바 -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                 <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2 border-b pb-2">
-                    <i class="fa-solid fa-chart-pie text-blue-600"></i> 졸업 기준 학점 충족도 (목표: 140학점)
+                    <i class="fa-solid fa-chart-pie text-blue-600"></i> 졸업 기준 학점 충족도 (목표: <span id="goalCreditLabel">140</span>학점)
                 </h3>
                 
                 <div class="space-y-4 text-xs">
-                    <!-- 1. 주전공 -->
                     <div>
                         <div class="flex justify-between font-semibold mb-1">
                             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> 주전공 학점 (공통 포함)</span>
@@ -248,7 +212,6 @@
                         </div>
                     </div>
 
-                    <!-- 2. 복수전공 -->
                     <div id="doubleMajorBox" class="hidden">
                         <div class="flex justify-between font-semibold mb-1">
                             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span> 복수전공 학점 (공통 포함)</span>
@@ -259,7 +222,6 @@
                         </div>
                     </div>
 
-                    <!-- 3. 부전공 -->
                     <div id="minorMajorBox" class="hidden">
                         <div class="flex justify-between font-semibold mb-1">
                             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span> 부전공 학점</span>
@@ -270,7 +232,6 @@
                         </div>
                     </div>
 
-                    <!-- 4. 교양 / 일반선택 -->
                     <div>
                         <div class="flex justify-between font-semibold mb-1">
                             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> 교양 / 일반선택 (인정+취득)</span>
@@ -281,11 +242,10 @@
                         </div>
                     </div>
 
-                    <!-- 5. 총 졸업기준 통합 멀티 컬러 프로그레스 바 -->
                     <div class="pt-2 border-t">
                         <div class="flex justify-between font-bold mb-1">
                             <span>총 졸업학점 누적 (공통 중복차감 반영)</span>
-                            <span id="totalProgressText">0 / 140 학점 (0%)</span>
+                            <span id="totalProgressText">0 학점 (0%)</span>
                         </div>
                         <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden flex">
                             <div id="barSegmentTransfer" class="bg-blue-600 h-full transition-all duration-300" title="전적대 인정학점"></div>
@@ -305,19 +265,17 @@
                 </div>
             </div>
 
-            <!-- 학기별 수강학점 제한 검증 -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                 <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                     <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> 학기별 수강 신청 한도 검토
                 </h3>
-                <ul id="semesterValidationList" class="space-y-1 text-xs text-slate-600">
-                </ul>
+                <ul id="semesterValidationList" class="space-y-1 text-xs text-slate-600"></ul>
             </div>
 
         </section>
     </main>
 
-    <!-- 과목 선택 팝업창 (Modal) -->
+    <!-- 과목 선택 모달 -->
     <div id="courseModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
         <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 mx-4 space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
@@ -327,7 +285,6 @@
                 <button onclick="closeCourseModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
 
-            <!-- 전공 메뉴 탭 -->
             <div class="flex space-x-1 border-b pb-2" id="modalMenuTabs">
                 <button onclick="switchModalTab('primary')" id="tabBtnPrimary" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-900 text-white">주전공 학과</button>
                 <button onclick="switchModalTab('double')" id="tabBtnDouble" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">복수전공 학과</button>
@@ -335,19 +292,15 @@
                 <button onclick="switchModalTab('general')" id="tabBtnGeneral" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">교양 / 일반</button>
             </div>
 
-            <!-- 선택 학과 안내 -->
             <div class="text-xs font-semibold text-blue-900 bg-blue-50 p-2 rounded border border-blue-200" id="modalDeptInfoLabel">
                 현재 학과: 건축도시공학과
             </div>
 
-            <!-- 과목 검색 필터 -->
             <div>
                 <input type="text" id="modalSearchInput" oninput="filterModalCourses()" placeholder="과목명을 입력하세요 (예: 건축, 시공, 디자인...)" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-blue-500">
             </div>
 
-            <!-- 과목 목록 리스트 -->
-            <div id="modalCourseListContainer" class="max-h-60 overflow-y-auto divide-y divide-slate-100 border rounded-lg">
-            </div>
+            <div id="modalCourseListContainer" class="max-h-60 overflow-y-auto divide-y divide-slate-100 border rounded-lg"></div>
 
             <div class="flex justify-end gap-2 pt-2 border-t">
                 <button onclick="closeCourseModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded-lg font-semibold">취소</button>
@@ -356,26 +309,8 @@
     </div>
 
     <script>
-        // uni/hycu.js 외부 파일에서 로드한 DB 데이터 매핑
-        const COURSE_DATABASE = (typeof HYCU_COURSE_DATABASE !== 'undefined') ? HYCU_COURSE_DATABASE : {};
-        const TRANSFER_CREDIT_MATRIX = (typeof HYCU_TRANSFER_CREDIT_MATRIX !== 'undefined') ? HYCU_TRANSFER_CREDIT_MATRIX : {};
-
-        function getGradeFromScore(score) {
-            if (score === null || score === undefined || isNaN(score) || score === '') {
-                return { grade: '미입력', gpa: null };
-            }
-
-            const val = parseFloat(score);
-            if (val >= 95) return { grade: 'A+', gpa: 4.5 };
-            if (val >= 90) return { grade: 'A0', gpa: 4.0 };
-            if (val >= 85) return { grade: 'B+', gpa: 3.5 };
-            if (val >= 80) return { grade: 'B0', gpa: 3.0 };
-            if (val >= 75) return { grade: 'C+', gpa: 2.5 };
-            if (val >= 70) return { grade: 'C0', gpa: 2.0 };
-            if (val >= 65) return { grade: 'D+', gpa: 1.5 };
-            if (val >= 60) return { grade: 'D0', gpa: 1.0 };
-            return { grade: 'F', gpa: 0.0 };
-        }
+        // 현재 선택된 대학 설정을 불러오는 전역 변수 (기본: HYCU_CONFIG)
+        const ACTIVE_CONFIG = (typeof HYCU_CONFIG !== 'undefined') ? HYCU_CONFIG : {};
 
         let courses = [];
         let currentGrade = 3;
@@ -384,10 +319,93 @@
         let semesterTabsList = [];
 
         let activeTargetIndex = null;
-        let activeModalTab = 'primary'; // primary, double, minor, general
+        let activeModalTab = 'primary';
+
+        // 1. 대학교 고유 환경설정을 UI 엘리먼트에 바인딩
+        function applyUnivConfigUI() {
+            if (!ACTIVE_CONFIG.univName) return;
+
+            document.getElementById('headerUnivTitle').innerText = ACTIVE_CONFIG.univName;
+            document.getElementById('univBannerLabel').innerText = `${ACTIVE_CONFIG.univLogoEmoji} ${ACTIVE_CONFIG.univName} (졸업요건: 총 ${ACTIVE_CONFIG.graduationCredits}학점)`;
+            document.getElementById('statGpaMaxLabel').innerText = `평균 평점 (/ ${ACTIVE_CONFIG.maxGpa.toFixed(1)})`;
+            document.getElementById('goalCreditLabel').innerText = ACTIVE_CONFIG.graduationCredits;
+
+            // 입학 구분 옵션 세팅
+            const admSelect = document.getElementById('admissionType');
+            admSelect.innerHTML = '';
+            (ACTIVE_CONFIG.admissionTypes || []).forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.value;
+                opt.innerText = item.label;
+                if (item.value === 'transfer_3') opt.selected = true;
+                admSelect.appendChild(opt);
+            });
+
+            // 학과 옵션 세팅 (주전공, 복수전공, 부전공)
+            populateDepartmentSelects();
+        }
+
+        function populateDepartmentSelects() {
+            const primarySelect = document.getElementById('primaryMajor');
+            const doubleSelect = document.getElementById('doubleMajorSelect');
+            const minorSelect = document.getElementById('minorMajorSelect');
+
+            primarySelect.innerHTML = '';
+            doubleSelect.innerHTML = '<option value="none">해당 없음</option>';
+            minorSelect.innerHTML = '<option value="none" selected>해당 없음</option>';
+
+            (ACTIVE_CONFIG.departmentGroups || []).forEach(group => {
+                const optGroupP = document.createElement('optgroup');
+                optGroupP.label = group.groupName;
+
+                const optGroupD = document.createElement('optgroup');
+                optGroupD.label = group.groupName;
+
+                const optGroupM = document.createElement('optgroup');
+                optGroupM.label = group.groupName;
+
+                group.departments.forEach(dept => {
+                    const opt1 = new Option(dept.label, dept.value);
+                    if (dept.value === '건축도시공학과') opt1.selected = true;
+                    optGroupP.appendChild(opt1);
+
+                    const opt2 = new Option(dept.label, dept.value);
+                    if (dept.value === '건축공간디자인학과') opt2.selected = true;
+                    optGroupD.appendChild(opt2);
+
+                    const opt3 = new Option(dept.label, dept.value);
+                    optGroupM.appendChild(opt3);
+                });
+
+                primarySelect.appendChild(optGroupP);
+                doubleSelect.appendChild(optGroupD);
+                minorSelect.appendChild(optGroupM);
+            });
+        }
+
+        function getGradeFromScore(score) {
+            if (score === null || score === undefined || isNaN(score) || score === '') {
+                return { grade: '미입력', gpa: null };
+            }
+
+            const val = parseFloat(score);
+            // 만점 설정에 따른 평점 계산기
+            const maxVal = ACTIVE_CONFIG.maxGpa || 4.5;
+            
+            if (val >= 95) return { grade: 'A+', gpa: maxVal };
+            if (val >= 90) return { grade: 'A0', gpa: maxVal === 4.3 ? 4.0 : 4.0 };
+            if (val >= 85) return { grade: 'B+', gpa: maxVal === 4.3 ? 3.3 : 3.5 };
+            if (val >= 80) return { grade: 'B0', gpa: maxVal === 4.3 ? 3.0 : 3.0 };
+            if (val >= 75) return { grade: 'C+', gpa: maxVal === 4.3 ? 2.3 : 2.5 };
+            if (val >= 70) return { grade: 'C0', gpa: maxVal === 4.3 ? 2.0 : 2.0 };
+            if (val >= 65) return { grade: 'D+', gpa: maxVal === 4.3 ? 1.3 : 1.5 };
+            if (val >= 60) return { grade: 'D0', gpa: maxVal === 4.3 ? 1.0 : 1.0 };
+            return { grade: 'F', gpa: 0.0 };
+        }
 
         function initApp() {
-            // LocalStorage 저장 데이터 복원
+            applyUnivConfigUI();
+
             const savedData = localStorage.getItem('hanyang_academic_data_hycu_v14');
             if (savedData) {
                 try {
@@ -498,8 +516,9 @@
         function getTransferCreditInfo() {
             const admType = document.getElementById('admissionType').value;
             const category = document.getElementById('transferMajorCategory').value;
-            if (TRANSFER_CREDIT_MATRIX[admType] && TRANSFER_CREDIT_MATRIX[admType][category]) {
-                return TRANSFER_CREDIT_MATRIX[admType][category];
+            const matrix = ACTIVE_CONFIG.transferCreditMatrix || {};
+            if (matrix[admType] && matrix[admType][category]) {
+                return matrix[admType][category];
             }
             return { lib: 0, maj: 0, gen: 0, total: 0 };
         }
@@ -753,12 +772,13 @@
                 return;
             }
 
-            let list = COURSE_DATABASE[deptName] || [];
+            const db = ACTIVE_CONFIG.courseDatabase || {};
+            let list = db[deptName] || [];
             if (list.length === 0 && (deptName.includes('건축') || deptName.includes('디자인'))) {
-                list = (COURSE_DATABASE["건축도시공학과"] || []).concat(COURSE_DATABASE["건축공간디자인학과"] || []);
+                list = (db["건축도시공학과"] || []).concat(db["건축공간디자인학과"] || []);
             }
             if (list.length === 0) {
-                list = COURSE_DATABASE["일반/교양"] || [];
+                list = db["일반/교양"] || [];
             }
 
             const searchKey = document.getElementById('modalSearchInput').value.trim().toLowerCase();
@@ -801,9 +821,10 @@
                 const doubleDept = document.getElementById('doubleMajorSelect').value;
                 const minorDept = document.getElementById('minorMajorSelect').value;
 
-                const primaryList = (COURSE_DATABASE[primaryDept] || []).map(x => x.name);
-                const doubleList = doubleDept !== 'none' ? (COURSE_DATABASE[doubleDept] || []).map(x => x.name) : [];
-                const minorList = minorDept !== 'none' ? (COURSE_DATABASE[minorDept] || []).map(x => x.name) : [];
+                const db = ACTIVE_CONFIG.courseDatabase || {};
+                const primaryList = (db[primaryDept] || []).map(x => x.name);
+                const doubleList = doubleDept !== 'none' ? (db[doubleDept] || []).map(x => x.name) : [];
+                const minorList = minorDept !== 'none' ? (db[minorDept] || []).map(x => x.name) : [];
 
                 const inPrimary = primaryList.includes(name);
                 const inDouble = doubleList.includes(name);
@@ -902,6 +923,8 @@
             document.getElementById('statScore').innerText = currentAvgScore.toFixed(1);
             document.getElementById('statTotalCredits').innerText = hycuTakingCredits;
 
+            const targetCredits = ACTIVE_CONFIG.graduationCredits || 140;
+
             const majorTotal = (creditByTrack['전공'] || 0) + (creditByTrack['공통'] || 0) + tInfo.maj;
             const doubleTotal = (creditByTrack['복수전공'] || 0) + (creditByTrack['공통'] || 0);
             const minorTotal = (creditByTrack['부전공'] || 0);
@@ -930,11 +953,11 @@
             document.getElementById('generalProgressText').innerText = `${generalTotal} 학점`;
             document.getElementById('generalProgressBar').style.width = `${Math.min(100, (generalTotal / 70) * 100)}%`;
 
-            const pctTransfer = Math.min(100, (tInfo.total / 140) * 100);
-            const pctMajor = Math.min(100, (((creditByTrack['전공'] || 0) + (creditByTrack['공통'] || 0)) / 140) * 100);
-            const pctDouble = Math.min(100, ((creditByTrack['복수전공'] || 0) / 140) * 100);
-            const pctMinor = Math.min(100, (minorTotal / 140) * 100);
-            const pctGeneral = Math.min(100, ((creditByTrack['일반'] || 0) / 140) * 100);
+            const pctTransfer = Math.min(100, (tInfo.total / targetCredits) * 100);
+            const pctMajor = Math.min(100, (((creditByTrack['전공'] || 0) + (creditByTrack['공통'] || 0)) / targetCredits) * 100);
+            const pctDouble = Math.min(100, ((creditByTrack['복수전공'] || 0) / targetCredits) * 100);
+            const pctMinor = Math.min(100, (minorTotal / targetCredits) * 100);
+            const pctGeneral = Math.min(100, ((creditByTrack['일반'] || 0) / targetCredits) * 100);
 
             document.getElementById('barSegmentTransfer').style.width = `${pctTransfer}%`;
             document.getElementById('barSegmentMajor').style.width = `${pctMajor}%`;
@@ -942,12 +965,12 @@
             document.getElementById('barSegmentMinor').style.width = `${pctMinor}%`;
             document.getElementById('barSegmentGeneral').style.width = `${pctGeneral}%`;
 
-            const totalPctNum = Math.min(100, Math.round((grandTotalCredits / 140) * 100));
-            document.getElementById('totalProgressText').innerText = `${grandTotalCredits} / 140 학점 (${totalPctNum}%)`;
+            const totalPctNum = Math.min(100, Math.round((grandTotalCredits / targetCredits) * 100));
+            document.getElementById('totalProgressText').innerText = `${grandTotalCredits} / ${targetCredits} 학점 (${totalPctNum}%)`;
 
             const statusBox = document.getElementById('graduationStatusBox');
-            const requiredHycuCredits = 140 - tInfo.total;
-            let isHycuRequirementMet = hycuTakingCredits >= requiredHycuCredits && grandTotalCredits >= 140;
+            const requiredHycuCredits = targetCredits - tInfo.total;
+            let isHycuRequirementMet = hycuTakingCredits >= requiredHycuCredits && grandTotalCredits >= targetCredits;
             let isEarlyGradEligible = currentGpa >= 4.0 && isHycuRequirementMet;
 
             statusBox.innerHTML = `
@@ -958,9 +981,9 @@
                     </span>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="font-semibold text-slate-700">총 졸업 학점 요건 (인정${tInfo.total} + 본교${hycuTakingCredits} = ${grandTotalCredits} / 140학점):</span>
-                    <span class="font-bold ${grandTotalCredits >= 140 ? 'text-emerald-600' : 'text-slate-600'}">
-                        ${grandTotalCredits >= 140 ? '충족 달성' : '진행 중'}
+                    <span class="font-semibold text-slate-700">총 졸업 학점 요건 (인정${tInfo.total} + 본교${hycuTakingCredits} = ${grandTotalCredits} / ${targetCredits}학점):</span>
+                    <span class="font-bold ${grandTotalCredits >= targetCredits ? 'text-emerald-600' : 'text-slate-600'}">
+                        ${grandTotalCredits >= targetCredits ? '충족 달성' : '진행 중'}
                     </span>
                 </div>
                 <div class="flex justify-between items-center pt-1 border-t">
