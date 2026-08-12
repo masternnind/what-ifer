@@ -97,16 +97,16 @@
                 </div>
             </div>
 
-            <div id="transferCreditsInfoCard" class="bg-blue-50 border border-blue-200 rounded-xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center text-xs gap-3">
+            <div id="transferCreditsInfoCard" class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center text-xs gap-3">
                 <div>
-                    <span class="font-bold text-blue-900 text-sm block mb-1">🎓 전적대학 항목별 인정학점 현황 (해당 학점 차감 후 잔여학점 이수)</span>
+                    <span class="font-bold text-slate-800 text-sm block mb-1">🎓 전적대학 항목별 인정학점 현황 (해당 학점 차감 후 잔여학점 이수)</span>
                     <div class="flex gap-2 text-slate-700 font-semibold" id="transferBreakdownBadgeList">
                     </div>
                 </div>
                 <div class="text-right whitespace-nowrap">
-                    <span class="text-xs text-blue-700 block">총 인정 학점</span>
-                    <span id="transferCreditsBadge" class="text-2xl font-black text-blue-900">0</span>
-                    <span class="text-blue-800 font-bold"> 학점</span>
+                    <span class="text-xs text-slate-500 block">총 인정 학점</span>
+                    <span id="transferCreditsBadge" class="text-2xl font-black text-slate-700">0</span>
+                    <span class="text-slate-600 font-bold"> 학점</span>
                 </div>
             </div>
 
@@ -186,11 +186,11 @@
                 <div class="space-y-4 text-xs">
                     <div>
                         <div class="flex justify-between font-semibold mb-1">
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> 주전공 필수 (인정+취득)</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block"></span> 주전공 필수 (인정+취득)</span>
                             <span id="majorProgressText">0 / 47 학점</span>
                         </div>
                         <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                            <div id="majorProgressBar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
+                            <div id="majorProgressBar" class="bg-emerald-600 h-full w-0 transition-all duration-300"></div>
                         </div>
                     </div>
 
@@ -216,31 +216,32 @@
 
                     <div id="minorMajorBox" class="hidden">
                         <div class="flex justify-between font-semibold mb-1">
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span> 부전공 학점</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span> 부전공 학점</span>
                             <span id="minorProgressText">0 / 18 학점</span>
                         </div>
                         <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                            <div id="minorProgressBar" class="bg-purple-500 h-full w-0 transition-all duration-300"></div>
+                            <div id="minorProgressBar" class="bg-rose-500 h-full w-0 transition-all duration-300"></div>
                         </div>
                     </div>
                     
                     <div class="flex justify-between font-semibold text-slate-500">
-                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></span> 일반선택 (인정+취득 누적)</span>
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-600 inline-block"></span> 일반선택 (인정+취득 누적)</span>
                         <span id="generalAccumulatedText">0 학점</span>
                     </div>
 
                     <div class="pt-3 border-t mt-2">
                         <div class="flex justify-between font-bold mb-1">
                             <span>총 졸업학점 (필요: 140학점)</span>
-                            <span id="totalProgressText" class="text-blue-700">0 / 140 학점 (0%)</span>
+                            <span id="totalProgressText" class="text-slate-800">0 / 140 학점 (0%)</span>
                         </div>
                         <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden flex">
-                            <div id="barSegmentTransfer" class="bg-blue-600 h-full transition-all duration-300" title="전적대 인정학점"></div>
-                            <div id="barSegmentMajor" class="bg-emerald-500 h-full transition-all duration-300" title="주전공 취득"></div>
+                            <!-- 컬러 팔레트: 회색(전적대), 에메랄드(전공), 앰버(교양), 인디고(복전), 로즈(부전), 사이언(일반) -->
+                            <div id="barSegmentTransfer" class="bg-slate-400 h-full transition-all duration-300" title="전적대 인정학점"></div>
+                            <div id="barSegmentMajor" class="bg-emerald-600 h-full transition-all duration-300" title="주전공 취득"></div>
                             <div id="barSegmentLiberal" class="bg-amber-500 h-full transition-all duration-300" title="교양 취득"></div>
                             <div id="barSegmentDouble" class="bg-indigo-500 h-full transition-all duration-300" title="복수전공 취득"></div>
-                            <div id="barSegmentMinor" class="bg-purple-500 h-full transition-all duration-300" title="부전공 취득"></div>
-                            <div id="barSegmentGeneral" class="bg-slate-400 h-full transition-all duration-300" title="일반선택 취득"></div>
+                            <div id="barSegmentMinor" class="bg-rose-500 h-full transition-all duration-300" title="부전공 취득"></div>
+                            <div id="barSegmentGeneral" class="bg-cyan-600 h-full transition-all duration-300" title="일반선택 취득"></div>
                         </div>
                     </div>
                 </div>
@@ -430,10 +431,10 @@
             if (admissionType === 'transfer_3') startGrade = 3;
 
             const semTypes = [
-                { season: '봄', label: '정규학기(봄)', isSeasonal: false },
-                { season: '여름', label: '계절학기(여름)', isSeasonal: true },
-                { season: '가을', label: '정규학기(가을)', isSeasonal: false },
-                { season: '겨울', label: '계절학기(겨울)', isSeasonal: true }
+                { season: '봄', label: '1학기(봄)', isSeasonal: false },
+                { season: '여름', label: '여름학기', isSeasonal: true },
+                { season: '가을', label: '2학기(가을)', isSeasonal: false },
+                { season: '겨울', label: '겨울학기', isSeasonal: true }
             ];
 
             let semList = [];
@@ -474,10 +475,9 @@
             return null;
         }
 
-        // 🔥 기능 2: 이전 학기까지의 이수 데이터로 조기졸업 가능 여부를 검증하는 함수
         function isGraduationMetBefore(targetSemKey) {
             const targetIdx = semesterTabsList.findIndex(s => s.key === targetSemKey);
-            if (targetIdx <= 0) return false; // 첫 학기는 무조건 통과
+            if (targetIdx <= 0) return false; 
 
             const priorKeys = semesterTabsList.slice(0, targetIdx).map(s => s.key);
             const priorCourses = courses.filter(c => priorKeys.includes(c.semKey) && c.name.trim() !== '');
@@ -559,10 +559,11 @@
             if (tInfo.total > 0) {
                 infoCard.style.display = 'flex';
                 badge.innerText = tInfo.total;
+                // 🔥 전적대학 인정학점 뱃지를 톤 다운된 컬러로 변경
                 listEl.innerHTML = `
-                    <span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded">교양: ${tInfo.lib}학점</span>
-                    <span class="bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded">전공: ${tInfo.maj}학점</span>
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded">일반: ${tInfo.gen}학점</span>
+                    <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded">교양: ${tInfo.lib}학점</span>
+                    <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">전공: ${tInfo.maj}학점</span>
+                    <span class="bg-cyan-100 text-cyan-800 px-2 py-0.5 rounded">일반: ${tInfo.gen}학점</span>
                 `;
             } else {
                 infoCard.style.display = 'none';
@@ -631,16 +632,15 @@
             const isSeasonal = currentSemObj ? currentSemObj.isSeasonal : false;
             const prevGpa = getPrevRegularSemesterGpa(currentSemKey);
 
-            // 탭 변경 시에는 상태에 맞는 간단한 안내만 표시
             if (isSeasonal) {
-                document.getElementById('semesterLimitGuideText').innerText = `※ 계절학기 고정 4칸 제공 (연계 정규학기 합산 최대 24학점 제한)`;
+                document.getElementById('semesterLimitGuideText').innerText = `※ 계절학기 최대 9학점 (연계 정규학기 합산 최대 24학점 제한)`;
             } else {
                 if (prevGpa === null) {
-                    document.getElementById('semesterLimitGuideText').innerText = `※ 첫 학기: 고정 9칸 제공 (연계 계절학기 합산 최대 24학점 제한)`;
+                    document.getElementById('semesterLimitGuideText').innerText = `※ 첫 학기: 최대 24학점 (연계 계절학기 합산 최대 24학점 제한)`;
                 } else if (prevGpa >= 3.0) {
-                    document.getElementById('semesterLimitGuideText').innerText = `※ 직전 평점 ${prevGpa.toFixed(2)} (우수): 고정 9칸 (연계 합산 24학점 제한)`;
+                    document.getElementById('semesterLimitGuideText').innerText = `※ 직전 평점 ${prevGpa.toFixed(2)} (우수): 최대 24학점 (연계 합산 24학점 제한)`;
                 } else {
-                    document.getElementById('semesterLimitGuideText').innerText = `※ 직전 평점 ${prevGpa.toFixed(2)} (3.0 미만): 최대 18학점 제한 (7~9번째 칸 차단)`;
+                    document.getElementById('semesterLimitGuideText').innerText = `※ 직전 평점 ${prevGpa.toFixed(2)} (3.0 미만): 최대 18학점 제한 (연계 합산 24학점 제한)`;
                 }
             }
         }
@@ -653,10 +653,8 @@
             const isSeasonal = currentSemObj ? currentSemObj.isSeasonal : false;
             const prevGpa = getPrevRegularSemesterGpa(currentSemKey);
 
-            // 🔥 기능 2: 이전 학기까지 목표를 100% 달성했는지 체크
             const isGradMetAlready = isGraduationMetBefore(currentSemKey);
 
-            // 🔥 기능 3: 해당 반기(봄+여름 OR 가을+겨울) 총 이수 학점 계산
             const yrStr = currentSemKey.split('-')[0];
             const isFirstHalf = (currentSeason === '봄' || currentSeason === '여름');
             const pairedSeason = currentSeason === '봄' ? '여름' : currentSeason === '여름' ? '봄' : currentSeason === '가을' ? '겨울' : '가을';
@@ -668,13 +666,12 @@
 
             const alertBanner = document.getElementById('statusAlertBanner');
             
-            // 배너 우선순위: 1. 조기졸업 -> 2. 24학점 한도 차단
             if (isGradMetAlready) {
-                alertBanner.className = "mb-3 p-3 bg-blue-100 border border-blue-300 text-blue-900 text-xs rounded-lg font-bold text-center";
-                alertBanner.innerHTML = `🎉 이전 학기까지 모든 졸업 요건(140학점 및 전공/교양 필수)을 달성하여 <span class="text-blue-700 font-black text-sm">조기졸업 가능</span> 상태입니다. (이후 학기 빈칸 입력 제한)`;
+                alertBanner.className = "mb-3 p-3 bg-blue-50 border border-blue-200 text-blue-900 text-xs rounded-lg font-bold text-center";
+                alertBanner.innerHTML = `🎉 이전 학기까지 모든 졸업 요건(140학점 및 전공/교양 필수)을 달성하여 <span class="text-blue-600 font-black text-sm">조기졸업 가능</span> 상태입니다. (이후 학기 빈칸 입력 제한)`;
                 alertBanner.classList.remove('hidden');
             } else if (halfYearTotalCredits >= 24) {
-                alertBanner.className = "mb-3 p-3 bg-amber-50 border border-amber-300 text-amber-900 text-xs rounded-lg font-bold text-center";
+                alertBanner.className = "mb-3 p-3 bg-amber-50 border border-amber-200 text-amber-900 text-xs rounded-lg font-bold text-center";
                 alertBanner.innerHTML = `⚠ 상/하반기 연계 합산 <strong>24학점</strong> 한도에 도달하여 추가 수강(빈칸) 작성이 완전히 제한됩니다. (현재 상/하반기 총 ${halfYearTotalCredits}학점)`;
                 alertBanner.classList.remove('hidden');
             } else {
@@ -688,7 +685,6 @@
                 const evalGrade = getGradeFromScore(c.score);
                 const isEmpty = c.name.trim() === '';
 
-                // 🔥 차단 로직 종합 (빈칸일 경우에만 차단 적용, 이미 작성해둔 과목은 유지/수정/삭제 가능)
                 const isGradBlocked = isEmpty && isGradMetAlready;
                 const isLimitBlocked = isEmpty && (halfYearTotalCredits >= 24);
                 const isGpaRestricted = !isSeasonal && (prevGpa !== null && prevGpa < 3.0) && indexInTab >= 6;
@@ -707,11 +703,13 @@
                     </td>
                     <td class="p-1.5 text-center whitespace-nowrap">
                         <span class="px-2 py-1 rounded text-xs font-bold block ${
+                            // 🔥 테이블 태그 컬러 변경
                             c.track === '전공' ? 'bg-emerald-100 text-emerald-800' :
-                            c.track === '공통' ? 'bg-teal-100 text-teal-800' :
-                            c.track === '복수전공' ? 'bg-indigo-100 text-indigo-800' :
-                            c.track === '부전공' ? 'bg-purple-100 text-purple-800' :
                             c.track === '교양' ? 'bg-amber-100 text-amber-800' :
+                            c.track === '복수전공' ? 'bg-indigo-100 text-indigo-800' :
+                            c.track === '부전공' ? 'bg-rose-100 text-rose-800' :
+                            c.track === '공통' ? 'bg-teal-100 text-teal-800' :
+                            c.track === '일반' ? 'bg-cyan-100 text-cyan-800' :
                             'bg-slate-100 text-slate-600'
                         }">
                             ${c.track || '미지정'}
@@ -724,12 +722,12 @@
                         <input type="number" step="0.01" value="${c.score !== null && c.score !== undefined ? c.score : ''}" placeholder="0~100" 
                                ${isDisabledRow || !c.name ? 'disabled' : ''}
                                oninput="onScoreInput(${realIdx}, this.value, this)" 
-                               class="w-full border rounded p-1 text-xs text-center font-bold text-blue-700 bg-blue-50/50 focus:bg-white focus:ring-2 focus:ring-blue-500 disabled:bg-slate-200">
+                               class="w-full border rounded p-1 text-xs text-center font-bold text-slate-700 bg-white focus:ring-2 focus:ring-blue-400 disabled:bg-slate-200">
                     </td>
-                    <td class="p-1.5 text-center font-bold text-blue-600 text-xs whitespace-nowrap" id="grade-label-${realIdx}">
+                    <td class="p-1.5 text-center font-bold text-slate-600 text-xs whitespace-nowrap" id="grade-label-${realIdx}">
                         ${evalGrade.grade}
                     </td>
-                    <td class="p-1.5 text-center font-bold text-indigo-600 text-xs whitespace-nowrap" id="gpa-label-${realIdx}">
+                    <td class="p-1.5 text-center font-bold text-blue-600 text-xs whitespace-nowrap" id="gpa-label-${realIdx}">
                         ${evalGrade.gpa !== null ? evalGrade.gpa.toFixed(1) : '-'}
                     </td>
                     <td class="p-1.5 text-center no-print">
@@ -762,7 +760,7 @@
                 const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
                 if (btn) {
                     if (t === tabType) {
-                        btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-900 text-white shadow";
+                        btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-700 text-white shadow";
                     } else {
                         btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200";
                     }
@@ -784,16 +782,13 @@
             renderModalCourseList(deptName);
         }
 
-        // 🔥 기능 1: 수강 이력이 있으면서 F학점이 아닌 경우를 찾는 함수
         function isCourseTakenAndPassed(courseName) {
             return courses.some(c => {
                 if (c.name !== courseName) return false;
-                // 성적이 아직 미입력이면 '수강 중'으로 간주하여 중복 방지
                 if (c.score === null || c.score === undefined || c.score === '') return true;
                 const eg = getGradeFromScore(c.score);
-                // F학점이면 재수강 가능하므로 중복 제한을 풂
                 if (eg.grade === 'F') return false; 
-                return true; // 그 외 등급은 모두 통과한 것이므로 중복 방지
+                return true; 
             });
         }
 
@@ -820,24 +815,20 @@
             list.forEach(c => {
                 if (searchKey !== '' && !c.name.toLowerCase().includes(searchKey)) return;
 
-                // 중복 수강 여부 확인
                 const isTaken = isCourseTakenAndPassed(c.name);
-
                 const item = document.createElement('div');
                 
                 if (isTaken) {
-                    // 이미 이수한 과목 (회색 처리, 클릭 불가능)
                     item.className = 'p-3 flex justify-between items-center text-xs border-b border-slate-50 bg-slate-100 opacity-50 cursor-not-allowed';
                     item.innerHTML = `
                         <span class="font-bold text-slate-500 line-through">${c.name} <span class="font-normal text-[10px]">(수강완료)</span></span>
                         <span class="text-slate-400 font-semibold">${c.credits}학점</span>
                     `;
                 } else {
-                    // 수강 가능한 과목 (클릭 가능)
-                    item.className = 'p-3 hover:bg-blue-50 cursor-pointer transition flex justify-between items-center text-xs border-b border-slate-50';
+                    item.className = 'p-3 hover:bg-slate-50 cursor-pointer transition flex justify-between items-center text-xs border-b border-slate-50';
                     item.innerHTML = `
-                        <span class="font-bold text-slate-800">${c.name}</span>
-                        <span class="text-blue-600 font-semibold">${c.credits}학점</span>
+                        <span class="font-bold text-slate-700">${c.name}</span>
+                        <span class="text-slate-600 font-semibold">${c.credits}학점</span>
                     `;
                     item.onclick = () => {
                         selectCourseFromModal(c.name, c.credits);
@@ -1025,6 +1016,7 @@
             const pctMinor = Math.min(100, ((creditByTrack['부전공'] || 0) / targetCredits) * 100);
             const pctGeneral = Math.min(100, ((creditByTrack['일반'] || 0) / targetCredits) * 100);
 
+            // 🔥 종합 바 컬러 적용 (회색, 에메랄드, 앰버, 인디고, 로즈, 사이언)
             document.getElementById('barSegmentTransfer').style.width = `${pctTransfer}%`;
             document.getElementById('barSegmentMajor').style.width = `${pctMajor}%`;
             document.getElementById('barSegmentLiberal').style.width = `${pctLiberal}%`;
@@ -1049,45 +1041,45 @@
             statusBox.innerHTML = `
                 <div class="flex justify-between items-center border-b border-slate-100 pb-1">
                     <span class="font-semibold text-slate-700">1. 총 졸업학점 (140학점 이상):</span>
-                    <span class="font-bold ${isTotalMet ? 'text-emerald-600' : 'text-red-500'}">
+                    <span class="font-bold ${isTotalMet ? 'text-emerald-600' : 'text-slate-500'}">
                         ${isTotalMet ? '✔️ 충족' : '❌ 부족 (' + (targetCredits - grandTotalCredits) + '학점 필요)'}
                     </span>
                 </div>
                 <div class="flex justify-between items-center border-b border-slate-100 pb-1">
                     <span class="font-semibold text-slate-700">2. 주전공 필수 (47학점 이상):</span>
-                    <span class="font-bold ${isMajorMet ? 'text-emerald-600' : 'text-red-500'}">
+                    <span class="font-bold ${isMajorMet ? 'text-emerald-600' : 'text-slate-500'}">
                         ${isMajorMet ? '✔️ 충족' : '❌ 부족 (' + (targetMajor - majorTotal) + '학점 필요)'}
                     </span>
                 </div>
                 <div class="flex justify-between items-center border-b border-slate-100 pb-1">
                     <span class="font-semibold text-slate-700">3. 교양 필수 (27학점 이상):</span>
-                    <span class="font-bold ${isLiberalMet ? 'text-emerald-600' : 'text-red-500'}">
+                    <span class="font-bold ${isLiberalMet ? 'text-emerald-600' : 'text-slate-500'}">
                         ${isLiberalMet ? '✔️ 충족' : '❌ 부족 (' + (targetLiberal - liberalTotal) + '학점 필요)'}
                     </span>
                 </div>
                 <div class="flex justify-between items-center border-b border-slate-100 pb-1">
                     <span class="font-semibold text-slate-700">4. 졸업 평균 평점 (1.5 이상):</span>
-                    <span class="font-bold ${isGpaMet ? 'text-emerald-600' : 'text-red-500'}">
+                    <span class="font-bold ${isGpaMet ? 'text-emerald-600' : 'text-slate-500'}">
                         ${isGpaMet ? '✔️ 충족 (' + currentGpa.toFixed(2) + ')' : '❌ 부족 (현재 ' + currentGpa.toFixed(2) + ')'}
                     </span>
                 </div>
                 ${doubleSelect !== 'none' ? `
                 <div class="flex justify-between items-center border-b border-slate-100 pb-1">
                     <span class="font-semibold text-slate-700">5. 복수전공 (36학점 이상):</span>
-                    <span class="font-bold ${isDoubleMet ? 'text-indigo-600' : 'text-red-500'}">
+                    <span class="font-bold ${isDoubleMet ? 'text-indigo-600' : 'text-slate-500'}">
                         ${isDoubleMet ? '✔️ 충족' : '❌ 부족 (' + (targetDouble - doubleTotal) + '학점 필요)'}
                     </span>
                 </div>` : ''}
                 ${minorSelect !== 'none' ? `
                 <div class="flex justify-between items-center border-b border-slate-100 pb-1">
                     <span class="font-semibold text-slate-700">5. 부전공 (18학점 이상):</span>
-                    <span class="font-bold ${isMinorMet ? 'text-purple-600' : 'text-red-500'}">
+                    <span class="font-bold ${isMinorMet ? 'text-rose-500' : 'text-slate-500'}">
                         ${isMinorMet ? '✔️ 충족' : '❌ 부족 (' + (targetMinor - minorTotal) + '학점 필요)'}
                     </span>
                 </div>` : ''}
                 
                 <div class="pt-2 text-center">
-                    <span class="px-4 py-1.5 rounded-full text-xs font-black ${isAllClear ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-200 text-slate-600'}">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-black ${isAllClear ? 'bg-blue-100 text-blue-700 shadow-sm' : 'bg-slate-100 text-slate-500'}">
                         ${isAllClear ? '🎉 최종 졸업 가능 상태입니다' : '조회 중 (졸업 요건 미달성)'}
                     </span>
                 </div>
@@ -1133,7 +1125,7 @@
                         li.className = "flex justify-between py-1 border-b border-slate-100 text-slate-600";
                         li.innerHTML = `
                             <span class="pl-2">- ${s.label}: <strong>${s.credits}학점</strong> <span class="text-[10px] text-slate-400">${limitNote}</span></span>
-                            <span class="${isLocalOk ? 'text-slate-400' : 'text-red-500 font-bold'}">
+                            <span class="${isLocalOk ? 'text-slate-400' : 'text-amber-600 font-bold'}">
                                 ${isLocalOk ? '' : '⚠ 단일학기 한도 초과'}
                             </span>
                         `;
@@ -1145,7 +1137,7 @@
                     groupLi.className = "flex justify-between py-1.5 border-b border-slate-300 bg-slate-50/50 mb-1";
                     groupLi.innerHTML = `
                         <span class="font-bold text-slate-700 text-[13px]">↳ ${g.gradeNum}학년 ${g.halfLabel} 합산</span>
-                        <span class="${isGroupOk ? 'text-blue-600 font-bold' : 'text-red-600 font-black'}">
+                        <span class="${isGroupOk ? 'text-blue-600 font-bold' : 'text-amber-600 font-black'}">
                             ${g.totalCredits} / 24학점 ${isGroupOk ? '<i class="fa-solid fa-check"></i> 정상' : '⚠ 한도초과'}
                         </span>
                     `;
