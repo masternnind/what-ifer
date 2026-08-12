@@ -32,20 +32,17 @@
                 </h1>
                 <p class="text-blue-200 text-sm mt-1">입학 구분별 인정학점 차감 및 전공/교양 필수 요건 자동 판정 시스템</p>
             </div>
-            <!-- 🔥 헤더 버튼 영역 개편 (공유, 백업, 복원, 초기화) -->
+            <!-- 🔥 헤더 버튼 영역 개편 (저장 버튼으로 직관성 향상) -->
             <div class="flex flex-wrap justify-end gap-2">
+                <button onclick="manualSave()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-floppy-disk"></i> 브라우저 저장
+                </button>
                 <button onclick="copyShareLink()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
-                    <i class="fa-solid fa-share-nodes"></i> 링크 공유
+                    <i class="fa-solid fa-share-nodes"></i> 진행상황 공유
                 </button>
-                <button onclick="exportDataToFile()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
-                    <i class="fa-solid fa-download"></i> 백업(저장)
+                <button onclick="window.print()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-file-pdf"></i> PDF 인쇄
                 </button>
-                <button onclick="document.getElementById('importFileInput').click()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
-                    <i class="fa-solid fa-upload"></i> 파일 복원
-                </button>
-                <!-- 파일 입력을 위한 숨김 필드 -->
-                <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importDataFromFile(event)">
-                
                 <button onclick="resetToDefault()" class="px-3 py-2 bg-rose-700 hover:bg-rose-600 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
                     <i class="fa-solid fa-rotate-right"></i> 초기화
                 </button>
@@ -251,7 +248,6 @@
                             <span id="totalProgressText" class="text-slate-800">0 / 140 학점 (0%)</span>
                         </div>
                         <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden flex">
-                            <!-- 컬러 팔레트: 회색(전적대), 에메랄드(전공), 앰버(교양), 인디고(복전), 로즈(부전), 사이언(일반) -->
                             <div id="barSegmentTransfer" class="bg-slate-400 h-full transition-all duration-300" title="전적대 인정학점"></div>
                             <div id="barSegmentMajor" class="bg-emerald-600 h-full transition-all duration-300" title="주전공 취득"></div>
                             <div id="barSegmentLiberal" class="bg-amber-500 h-full transition-all duration-300" title="교양 취득"></div>
@@ -318,12 +314,11 @@
         let activeTargetIndex = null;
         let activeModalTab = 'primary';
 
-        // 🔥 통합된 데이터 포맷 로드 (설정값 + 과목)
+        // 🔥 공유받은 데이터를 불러오거나 내 로컬 데이터를 불러오는 함수
         function initApp() {
             applyUnivConfigUI();
             populateAdmissionYears();
 
-            // 편입구분 Select를 미리 세팅해두어 에러 방지
             document.getElementById('transferMajorCategory').innerHTML = `
                 <option value="none">해당없음</option>
                 <option value="same">동일전공 계열</option>
@@ -333,42 +328,66 @@
         
             const urlParams = new URLSearchParams(window.location.search);
             const sharedData = urlParams.get('d') || urlParams.get('data');
+            
+            // 기존 작업 중인 로컬 데이터 확인
+            const existingDataRaw = localStorage.getItem('hanyang_academic_data_hycu_v16');
+            let hasExistingWork = false;
+            if (existingDataRaw && existingDataRaw.length > 50) {
+                try {
+                    const chk = JSON.parse(existingDataRaw);
+                    if (chk.courses && chk.courses.filter(c => c.name.trim() !== '').length > 0) {
+                        hasExistingWork = true;
+                    }
+                } catch(e){}
+            }
         
             if (sharedData) {
-                try {
-                    let decodedStr;
-                    if (urlParams.has('d')) {
-                        decodedStr = LZString.decompressFromEncodedURIComponent(sharedData);
-                    } else {
-                        let base64 = sharedData.replace(/-/g, '+').replace(/_/g, '/');
-                        while (base64.length % 4) { base64 += '='; }
-                        decodedStr = decodeURIComponent(escape(atob(base64)));
-                    }
+                // 🔥 기존 데이터가 있을 때 덮어쓰기 여부 확인
+                let shouldOverwrite = true;
+                if (hasExistingWork) {
+                    shouldOverwrite = confirm("📥 공유된 링크로 접속하셨습니다.\n현재 브라우저에 작업 중이던 기존 데이터가 있습니다. 공유받은 내용으로 덮어쓰시겠습니까?\n(취소를 누르면 내 기존 데이터를 유지합니다.)");
+                }
 
-                    const parsedData = JSON.parse(decodedStr);
-
-                    // 🔥 설정값(p)과 과목 데이터(c)가 모두 존재하는 포맷 로드
-                    if (parsedData.p && parsedData.c) {
-                        applyProfileDataArray(parsedData.p);
-                        courses = parsedData.c.map(arr => ({
-                            semKey: arr[0], name: arr[1], track: arr[2], credits: arr[3], score: arr[4]
-                        }));
-                    } 
-                    // 과거 버전(단순 과목 배열만 있는 경우) 호환
-                    else if (Array.isArray(parsedData)) {
-                        if (parsedData.length > 0 && Array.isArray(parsedData[0])) {
-                            courses = parsedData.map(arr => ({ semKey: arr[0], name: arr[1], track: arr[2], credits: arr[3], score: arr[4] }));
+                if (shouldOverwrite) {
+                    try {
+                        let decodedStr;
+                        if (urlParams.has('d')) {
+                            decodedStr = LZString.decompressFromEncodedURIComponent(sharedData);
                         } else {
-                            courses = parsedData;
+                            let base64 = sharedData.replace(/-/g, '+').replace(/_/g, '/');
+                            while (base64.length % 4) { base64 += '='; }
+                            decodedStr = decodeURIComponent(escape(atob(base64)));
                         }
+
+                        const parsedData = JSON.parse(decodedStr);
+
+                        if (parsedData.p && parsedData.c) {
+                            applyProfileDataArray(parsedData.p);
+                            courses = parsedData.c.map(arr => ({
+                                semKey: arr[0], name: arr[1], track: arr[2], credits: arr[3], score: arr[4]
+                            }));
+                        } else if (Array.isArray(parsedData)) {
+                            if (parsedData.length > 0 && Array.isArray(parsedData[0])) {
+                                courses = parsedData.map(arr => ({ semKey: arr[0], name: arr[1], track: arr[2], credits: arr[3], score: arr[4] }));
+                            } else {
+                                courses = parsedData;
+                            }
+                        }
+                        
+                        saveAndRecalculateSilent();
+                        alert("✅ 공유받은 로드맵 데이터를 성공적으로 불러왔습니다!");
+                    } catch (e) {
+                        alert("❌ 공유 링크가 손상되었거나 유효하지 않습니다. 내 기기에 저장된 기존 데이터를 불러옵니다.");
+                        loadLocalData();
                     }
-                    
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                    alert("📥 공유받은 로드맵 데이터를 성공적으로 불러왔습니다!");
-                } catch (e) {
-                    alert("❌ 공유 링크가 손상되었거나 유효하지 않습니다. 내 기기에 저장된 기존 데이터를 불러옵니다.");
+                } else {
+                    // 취소 누른 경우 내 로컬 데이터 유지
                     loadLocalData();
                 }
+                
+                // 주소창 파라미터 지워서 새로고침 시 무한 덮어쓰기 방지
+                window.history.replaceState({}, document.title, window.location.pathname);
+
             } else {
                 loadLocalData();
             }
@@ -386,19 +405,9 @@
                         courses = data.courses;
                     }
                 } catch (e) { courses = []; }
-            } else {
-                // 이전 버전 연동
-                const oldData = localStorage.getItem('hanyang_academic_data_hycu_v15');
-                if (oldData) {
-                    try { 
-                        let parsed = JSON.parse(oldData);
-                        if (Array.isArray(parsed)) courses = parsed;
-                    } catch(e) {}
-                }
             }
         }
 
-        // 🔥 공유용 설정 데이터 할당
         function applyProfileDataArray(pArray) {
             if (!pArray || pArray.length < 6) return;
             document.getElementById('admissionYear').value = pArray[0];
@@ -421,13 +430,17 @@
                 <option value="other">기타전공 (타계열)</option>
             `;
             document.getElementById('transferMajorCategory').value = profile.transfer;
-            
             document.getElementById('primaryMajor').value = profile.primary;
             document.getElementById('doubleMajorSelect').value = profile.double;
             document.getElementById('minorMajorSelect').value = profile.minor;
         }
 
-        // 🔥 링크 공유 시 설정값(프로필)도 함께 압축
+        // 🔥 명시적 저장 버튼 (심리적 안정감 + 인앱 브라우저 경고)
+        function manualSave() {
+            saveAndRecalculateSilent();
+            alert("✅ 브라우저(현재 기기)에 임시 저장이 완료되었습니다!\n\n※ 주의: 카카오톡 등 '앱 내 브라우저'나 '시크릿 모드'에서는 나중에 창을 닫으면 데이터가 날아갈 수 있습니다.\n확실한 보관을 원하시면 [계획 공유] 버튼을 눌러 생성된 링크를 카톡 '내게 쓰기' 등에 남겨주세요.");
+        }
+
         function copyShareLink() {
             const validCourses = courses.filter(c => c.name && c.name.trim() !== '');
             if (validCourses.length === 0) {
@@ -453,64 +466,13 @@
                 const shareUrl = window.location.origin + window.location.pathname + "?d=" + encodedData;
 
                 navigator.clipboard.writeText(shareUrl).then(() => {
-                    alert("✅ 전공 설정 및 과목 데이터가 모두 포함된 압축 공유 링크가 복사되었습니다!");
+                    alert("✅ 현재 작성하신 로드맵 링크가 복사되었습니다!\n이 링크를 잃어버리지 않게 '카톡 내게 쓰기' 등에 남겨두시면 언제든 그대로 불러올 수 있습니다.");
                 }).catch(err => {
                     prompt("클립보드 자동 복사가 차단되었습니다. 아래 링크를 수동으로 복사해주세요:", shareUrl);
                 });
             } catch(e) {
                 alert("링크 생성 중 오류가 발생했습니다.");
             }
-        }
-
-        // 🔥 수동 백업(파일 내보내기) 기능
-        function exportDataToFile() {
-            const appData = {
-                profile: {
-                    year: document.getElementById('admissionYear').value,
-                    type: document.getElementById('admissionType').value,
-                    transfer: document.getElementById('transferMajorCategory').value,
-                    primary: document.getElementById('primaryMajor').value,
-                    double: document.getElementById('doubleMajorSelect').value,
-                    minor: document.getElementById('minorMajorSelect').value
-                },
-                courses: courses
-            };
-            
-            const dataStr = JSON.stringify(appData, null, 2);
-            const blob = new Blob([dataStr], {type: "application/json"});
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `내_졸업로드맵_백업.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // 🔥 수동 복원(파일 불러오기) 기능
-        function importDataFromFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.profile && data.courses) {
-                        applyProfileObj(data.profile);
-                        courses = data.courses;
-                        saveAndRecalculateSilent();
-                        onAdmissionTypeChange();
-                        alert("✅ 백업 데이터 복원이 완료되었습니다.");
-                    } else {
-                        alert("지원하지 않는 파일 형식입니다. (전용 백업 파일 필요)");
-                    }
-                } catch(err) {
-                    alert("파일을 읽는 중 오류가 발생했습니다.");
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = ''; // 파일 선택창 리셋
         }
 
         function applyUnivConfigUI() {
@@ -776,7 +738,6 @@
             ensureDefaultSlotsForTab(currentSemKey);
             renderTabs();
             renderTable();
-            // 🔥 설정이 바뀔때마다 자동 저장 실행
             saveAndRecalculateSilent();
         }
 
@@ -1114,10 +1075,9 @@
         }
 
         function resetToDefault() {
-            if (confirm("입력하신 모든 데이터가 초기화됩니다. 진행하시겠습니까?")) {
+            if (confirm("입력하신 모든 과목 및 학점 데이터가 초기화됩니다. 진행하시겠습니까?")) {
                 courses = [];
                 localStorage.removeItem('hanyang_academic_data_hycu_v16');
-                localStorage.removeItem('hanyang_academic_data_hycu_v15');
                 initApp();
             }
         }
