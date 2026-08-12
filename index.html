@@ -439,13 +439,28 @@
             const admissionType = document.getElementById('admissionType').value;
             const transferCategorySelect = document.getElementById('transferMajorCategory');
             
+            // 옵션 목록을 새로 그릴 때 이전 선택값을 유지하기 위해 저장
+            const currentValue = transferCategorySelect.value;
+            
             if (admissionType === 'freshman') {
-                transferCategorySelect.value = 'none';
+                // 신입학: '해당없음'만 생성하고 드롭다운 비활성화
+                transferCategorySelect.innerHTML = '<option value="none">해당없음</option>';
                 transferCategorySelect.disabled = true;
+                transferCategorySelect.value = 'none';
             } else {
+                // 편입학(2, 3학년): '해당없음'을 제거하고 실제 인정 분류 3가지만 생성
+                transferCategorySelect.innerHTML = `
+                    <option value="same">동일전공 계열</option>
+                    <option value="similar">유사전공 계열</option>
+                    <option value="other">기타전공 (타계열)</option>
+                `;
                 transferCategorySelect.disabled = false;
-                if (transferCategorySelect.value === 'none') {
-                    transferCategorySelect.value = 'same';
+                
+                // 기존에 '동일/유사/기타' 중 하나가 선택되어 있었다면 그대로 유지, 아니면 '동일전공'을 기본값으로 설정
+                if (['same', 'similar', 'other'].includes(currentValue)) {
+                    transferCategorySelect.value = currentValue;
+                } else {
+                    transferCategorySelect.value = 'same'; // 기본값
                 }
             }
             
