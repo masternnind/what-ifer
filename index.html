@@ -672,7 +672,7 @@
                 alertBanner.classList.remove('hidden');
             } else if (halfYearTotalCredits >= 24) {
                 alertBanner.className = "mb-3 p-3 bg-amber-50 border border-amber-200 text-amber-900 text-xs rounded-lg font-bold text-center";
-                alertBanner.innerHTML = `⚠ 상/하반기 연계 합산 <strong>24학점</strong> 한도에 도달하여 추가 수강(빈칸) 작성이 완전히 제한됩니다. (현재 상/하반기 총 ${halfYearTotalCredits}학점)`;
+                alertBanner.innerHTML = `⚠ 연계 합산 <strong>24학점</strong> 한도에 도달하여 추가 작성이 제한됩니다. (현재 정규 + 계절학기 총 ${halfYearTotalCredits}학점)`;
                 alertBanner.classList.remove('hidden');
             } else {
                 alertBanner.classList.add('hidden');
