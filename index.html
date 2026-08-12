@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- 🔥 URL 초고압축을 위한 LZ-String 라이브러리 추가 -->
+    <!-- URL 초고압축을 위한 LZ-String 라이브러리 추가 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 
     <!-- 대학별 설정을 담은 외부 JS (기본: 한양사이버대) -->
@@ -32,15 +32,22 @@
                 </h1>
                 <p class="text-blue-200 text-sm mt-1">입학 구분별 인정학점 차감 및 전공/교양 필수 요건 자동 판정 시스템</p>
             </div>
-            <div class="flex gap-2">
-                <button onclick="copyShareLink()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-xs font-semibold transition flex items-center gap-1">
-                    <i class="fa-solid fa-share-nodes"></i> 계획 공유
+            <!-- 🔥 헤더 버튼 영역 개편 (공유, 백업, 복원, 초기화) -->
+            <div class="flex flex-wrap justify-end gap-2">
+                <button onclick="copyShareLink()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-share-nodes"></i> 링크 공유
                 </button>
-                <button onclick="resetToDefault()" class="px-3 py-2 bg-blue-800 hover:bg-blue-700 rounded text-xs transition flex items-center gap-1">
-                    <i class="fa-solid fa-rotate-right"></i> 데이터 초기화
+                <button onclick="exportDataToFile()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-download"></i> 백업(저장)
                 </button>
-                <button onclick="window.print()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 rounded text-xs font-semibold transition flex items-center gap-1">
-                    <i class="fa-solid fa-file-pdf"></i> 리포트 인쇄/PDF
+                <button onclick="document.getElementById('importFileInput').click()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-upload"></i> 파일 복원
+                </button>
+                <!-- 파일 입력을 위한 숨김 필드 -->
+                <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importDataFromFile(event)">
+                
+                <button onclick="resetToDefault()" class="px-3 py-2 bg-rose-700 hover:bg-rose-600 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-rotate-right"></i> 초기화
                 </button>
             </div>
         </div>
@@ -85,19 +92,19 @@
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">4. 주전공 학과</label>
-                        <select id="primaryMajor" onchange="calculateAll()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
+                        <select id="primaryMajor" onchange="onProfileChange()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
                         </select>
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">5. 복수전공 학과</label>
-                        <select id="doubleMajorSelect" onchange="calculateAll()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
+                        <select id="doubleMajorSelect" onchange="onProfileChange()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
                         </select>
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">6. 부전공 학과</label>
-                        <select id="minorMajorSelect" onchange="calculateAll()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
+                        <select id="minorMajorSelect" onchange="onProfileChange()" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-blue-500 bg-white font-medium">
                         </select>
                     </div>
                 </div>
@@ -134,7 +141,6 @@
                     </div>
                 </div>
 
-                <!-- 🌟 동적 상태 알림 배너 (조기졸업 또는 24학점 차단) -->
                 <div id="statusAlertBanner" class="hidden"></div>
 
                 <div class="overflow-x-auto">
@@ -190,7 +196,6 @@
                 </h3>
                 
                 <div class="space-y-4 text-xs">
-                    <!-- 🔥 각 프로그레스 바를 flex 구조로 변경하여 인정(회색) / 취득(컬러) 분리 -->
                     <div>
                         <div class="flex justify-between font-semibold mb-1">
                             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block"></span> 주전공 필수 (인정+취득)</span>
@@ -313,8 +318,18 @@
         let activeTargetIndex = null;
         let activeModalTab = 'primary';
 
+        // 🔥 통합된 데이터 포맷 로드 (설정값 + 과목)
         function initApp() {
             applyUnivConfigUI();
+            populateAdmissionYears();
+
+            // 편입구분 Select를 미리 세팅해두어 에러 방지
+            document.getElementById('transferMajorCategory').innerHTML = `
+                <option value="none">해당없음</option>
+                <option value="same">동일전공 계열</option>
+                <option value="similar">유사전공 계열</option>
+                <option value="other">기타전공 (타계열)</option>
+            `;
         
             const urlParams = new URLSearchParams(window.location.search);
             const sharedData = urlParams.get('d') || urlParams.get('data');
@@ -322,7 +337,6 @@
             if (sharedData) {
                 try {
                     let decodedStr;
-                    
                     if (urlParams.has('d')) {
                         decodedStr = LZString.decompressFromEncodedURIComponent(sharedData);
                     } else {
@@ -333,21 +347,22 @@
 
                     const parsedData = JSON.parse(decodedStr);
 
-                    if (Array.isArray(parsedData)) {
+                    // 🔥 설정값(p)과 과목 데이터(c)가 모두 존재하는 포맷 로드
+                    if (parsedData.p && parsedData.c) {
+                        applyProfileDataArray(parsedData.p);
+                        courses = parsedData.c.map(arr => ({
+                            semKey: arr[0], name: arr[1], track: arr[2], credits: arr[3], score: arr[4]
+                        }));
+                    } 
+                    // 과거 버전(단순 과목 배열만 있는 경우) 호환
+                    else if (Array.isArray(parsedData)) {
                         if (parsedData.length > 0 && Array.isArray(parsedData[0])) {
-                            courses = parsedData.map(arr => ({
-                                semKey: arr[0],
-                                name: arr[1],
-                                track: arr[2],
-                                credits: arr[3],
-                                score: arr[4]
-                            }));
+                            courses = parsedData.map(arr => ({ semKey: arr[0], name: arr[1], track: arr[2], credits: arr[3], score: arr[4] }));
                         } else {
                             courses = parsedData;
                         }
                     }
                     
-                    localStorage.setItem('hanyang_academic_data_hycu_v15', JSON.stringify(courses));
                     window.history.replaceState({}, document.title, window.location.pathname);
                     alert("📥 공유받은 로드맵 데이터를 성공적으로 불러왔습니다!");
                 } catch (e) {
@@ -358,21 +373,61 @@
                 loadLocalData();
             }
         
-            populateAdmissionYears();
             onAdmissionTypeChange();
         }
 
         function loadLocalData() {
-            const savedData = localStorage.getItem('hanyang_academic_data_hycu_v15');
+            const savedData = localStorage.getItem('hanyang_academic_data_hycu_v16');
             if (savedData) {
                 try { 
-                    courses = JSON.parse(savedData); 
-                } catch (e) { 
-                    courses = []; 
+                    const data = JSON.parse(savedData); 
+                    if (data.profile && data.courses) {
+                        applyProfileObj(data.profile);
+                        courses = data.courses;
+                    }
+                } catch (e) { courses = []; }
+            } else {
+                // 이전 버전 연동
+                const oldData = localStorage.getItem('hanyang_academic_data_hycu_v15');
+                if (oldData) {
+                    try { 
+                        let parsed = JSON.parse(oldData);
+                        if (Array.isArray(parsed)) courses = parsed;
+                    } catch(e) {}
                 }
             }
         }
 
+        // 🔥 공유용 설정 데이터 할당
+        function applyProfileDataArray(pArray) {
+            if (!pArray || pArray.length < 6) return;
+            document.getElementById('admissionYear').value = pArray[0];
+            document.getElementById('admissionType').value = pArray[1];
+            document.getElementById('transferMajorCategory').value = pArray[2];
+            document.getElementById('primaryMajor').value = pArray[3];
+            document.getElementById('doubleMajorSelect').value = pArray[4];
+            document.getElementById('minorMajorSelect').value = pArray[5];
+        }
+
+        function applyProfileObj(profile) {
+            if(!profile) return;
+            document.getElementById('admissionYear').value = profile.year;
+            document.getElementById('admissionType').value = profile.type;
+            
+            document.getElementById('transferMajorCategory').innerHTML = `
+                <option value="none">해당없음</option>
+                <option value="same">동일전공 계열</option>
+                <option value="similar">유사전공 계열</option>
+                <option value="other">기타전공 (타계열)</option>
+            `;
+            document.getElementById('transferMajorCategory').value = profile.transfer;
+            
+            document.getElementById('primaryMajor').value = profile.primary;
+            document.getElementById('doubleMajorSelect').value = profile.double;
+            document.getElementById('minorMajorSelect').value = profile.minor;
+        }
+
+        // 🔥 링크 공유 시 설정값(프로필)도 함께 압축
         function copyShareLink() {
             const validCourses = courses.filter(c => c.name && c.name.trim() !== '');
             if (validCourses.length === 0) {
@@ -380,24 +435,82 @@
                 return;
             }
 
-            const minifiedData = validCourses.map(c => [
-                c.semKey, c.name, c.track, c.credits, c.score
-            ]);
+            const minifiedCourses = validCourses.map(c => [ c.semKey, c.name, c.track, c.credits, c.score ]);
+            const profileData = [
+                document.getElementById('admissionYear').value,
+                document.getElementById('admissionType').value,
+                document.getElementById('transferMajorCategory').value,
+                document.getElementById('primaryMajor').value,
+                document.getElementById('doubleMajorSelect').value,
+                document.getElementById('minorMajorSelect').value
+            ];
+
+            const exportObj = { p: profileData, c: minifiedCourses };
 
             try {
-                const dataStr = JSON.stringify(minifiedData);
+                const dataStr = JSON.stringify(exportObj);
                 const encodedData = LZString.compressToEncodedURIComponent(dataStr);
-                
                 const shareUrl = window.location.origin + window.location.pathname + "?d=" + encodedData;
 
                 navigator.clipboard.writeText(shareUrl).then(() => {
-                    alert("✅ 초고압축 공유 링크가 복사되었습니다!\n길이가 획기적으로 줄어들어 안전하게 공유할 수 있습니다.");
+                    alert("✅ 전공 설정 및 과목 데이터가 모두 포함된 압축 공유 링크가 복사되었습니다!");
                 }).catch(err => {
                     prompt("클립보드 자동 복사가 차단되었습니다. 아래 링크를 수동으로 복사해주세요:", shareUrl);
                 });
             } catch(e) {
                 alert("링크 생성 중 오류가 발생했습니다.");
             }
+        }
+
+        // 🔥 수동 백업(파일 내보내기) 기능
+        function exportDataToFile() {
+            const appData = {
+                profile: {
+                    year: document.getElementById('admissionYear').value,
+                    type: document.getElementById('admissionType').value,
+                    transfer: document.getElementById('transferMajorCategory').value,
+                    primary: document.getElementById('primaryMajor').value,
+                    double: document.getElementById('doubleMajorSelect').value,
+                    minor: document.getElementById('minorMajorSelect').value
+                },
+                courses: courses
+            };
+            
+            const dataStr = JSON.stringify(appData, null, 2);
+            const blob = new Blob([dataStr], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `내_졸업로드맵_백업.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 🔥 수동 복원(파일 불러오기) 기능
+        function importDataFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.profile && data.courses) {
+                        applyProfileObj(data.profile);
+                        courses = data.courses;
+                        saveAndRecalculateSilent();
+                        onAdmissionTypeChange();
+                        alert("✅ 백업 데이터 복원이 완료되었습니다.");
+                    } else {
+                        alert("지원하지 않는 파일 형식입니다. (전용 백업 파일 필요)");
+                    }
+                } catch(err) {
+                    alert("파일을 읽는 중 오류가 발생했습니다.");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // 파일 선택창 리셋
         }
 
         function applyUnivConfigUI() {
@@ -663,7 +776,8 @@
             ensureDefaultSlotsForTab(currentSemKey);
             renderTabs();
             renderTable();
-            calculateAll();
+            // 🔥 설정이 바뀔때마다 자동 저장 실행
+            saveAndRecalculateSilent();
         }
 
         function updateCurrentSemKey() {
@@ -1000,15 +1114,27 @@
         }
 
         function resetToDefault() {
-            if (confirm("입력하신 모든 과목 및 학점 데이터가 초기화됩니다. 진행하시겠습니까?")) {
+            if (confirm("입력하신 모든 데이터가 초기화됩니다. 진행하시겠습니까?")) {
                 courses = [];
+                localStorage.removeItem('hanyang_academic_data_hycu_v16');
                 localStorage.removeItem('hanyang_academic_data_hycu_v15');
                 initApp();
             }
         }
 
         function saveAndRecalculateSilent() {
-            localStorage.setItem('hanyang_academic_data_hycu_v15', JSON.stringify(courses));
+            const appData = {
+                profile: {
+                    year: document.getElementById('admissionYear').value,
+                    type: document.getElementById('admissionType').value,
+                    transfer: document.getElementById('transferMajorCategory').value,
+                    primary: document.getElementById('primaryMajor').value,
+                    double: document.getElementById('doubleMajorSelect').value,
+                    minor: document.getElementById('minorMajorSelect').value
+                },
+                courses: courses
+            };
+            localStorage.setItem('hanyang_academic_data_hycu_v16', JSON.stringify(appData));
             calculateAll();
         }
 
@@ -1078,7 +1204,6 @@
 
             const grandTotalCredits = tInfo.total + hycuTakingCredits;
 
-            // 🔥 이중 진행률 바 업데이트 로직 (전적대인정학점, 본교취득학점)
             updateBar('major', tInfo.maj, majorEarned, targetMajor);
             updateBar('liberal', tInfo.lib, liberalEarned, targetLiberal);
 
@@ -1132,7 +1257,7 @@
                 <div class="flex justify-between items-center border-b border-slate-100 pb-1">
                     <span class="font-semibold text-slate-700">1. 총 졸업학점 (140학점 이상):</span>
                     <span class="font-bold ${isTotalMet ? 'text-emerald-600' : 'text-slate-500'}">
-                        ${isTotalMet ? '✔️ 충족' : '❌ 부족 (' + (targetCredits - grandTotalCredits) + '학점 필요)'}
+                        ${isTotalMet ? '✔️ 충족' : '❌ 부족 (' + Math.max(0, targetCredits - grandTotalCredits) + '학점 필요)'}
                     </span>
                 </div>
                 <div class="flex justify-between items-center border-b border-slate-100 pb-1">
@@ -1240,7 +1365,6 @@
             }
         }
 
-        // 🔥 이중 바(Transfer + Earned) 업데이트 함수 적용
         function updateBar(id, transfer, earned, max) {
             const total = transfer + earned;
             const pctTotal = Math.min(100, Math.round((total / max) * 100));
