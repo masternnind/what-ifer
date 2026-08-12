@@ -19,6 +19,14 @@
             body { background: white; font-size: 12pt; }
             .print-container { shadow: none; border: none; padding: 0; }
         }
+        /* 모바일 터치 최적화 (스크롤바 스타일링) */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen pb-12">
@@ -32,7 +40,6 @@
                 </h1>
                 <p class="text-blue-200 text-sm mt-1">입학 구분별 인정학점 차감 및 전공/교양 필수 요건 자동 판정 시스템</p>
             </div>
-            <!-- 🔥 헤더 버튼 영역 개편 (저장 버튼으로 직관성 향상) -->
             <div class="flex flex-wrap justify-end gap-2">
                 <button onclick="manualSave()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
                     <i class="fa-solid fa-floppy-disk"></i> 브라우저 저장
@@ -109,7 +116,7 @@
 
             <div id="transferCreditsInfoCard" class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center text-xs gap-3">
                 <div>
-                    <span class="font-bold text-slate-800 text-sm block mb-1">🎓 전적대학 항목별 인정학점 현황 (해당 학점 차감 후 잔여학점 이수)</span>
+                    <span class="font-bold text-slate-800 text-sm block mb-1">🎓 전적대학 항목별 인정학점 현황 (차감 후 잔여학점 이수)</span>
                     <div class="flex gap-2 text-slate-700 font-semibold" id="transferBreakdownBadgeList">
                     </div>
                 </div>
@@ -140,11 +147,13 @@
 
                 <div id="statusAlertBanner" class="hidden"></div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs table-fixed">
+                <!-- 🔥 가독성 개선: 모바일에서 표가 찌그러지지 않고 좌우 스크롤 되도록 min-w-[650px] 적용 -->
+                <div class="overflow-x-auto pb-4 custom-scrollbar">
+                    <table class="w-full text-left text-xs table-fixed min-w-[650px]">
                         <thead class="bg-slate-100 text-slate-700 uppercase whitespace-nowrap text-center">
                             <tr>
-                                <th class="p-2 border-b text-left w-5/12 min-w-[160px]">과목명</th>
+                                <!-- 과목명 너비 대폭 확보 -->
+                                <th class="p-2 border-b text-left w-auto min-w-[200px]">과목명</th>
                                 <th class="p-2 border-b w-20">구분</th>
                                 <th class="p-2 border-b w-16">학점</th>
                                 <th class="p-2 border-b w-24">점수(백분율)</th>
@@ -294,7 +303,7 @@
                 <input type="text" id="modalSearchInput" oninput="filterModalCourses()" placeholder="과목명을 입력하세요 (예: 건축, 시공, 디자인...)" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-blue-500">
             </div>
 
-            <div id="modalCourseListContainer" class="max-h-60 overflow-y-auto divide-y divide-slate-100 border rounded-lg"></div>
+            <div id="modalCourseListContainer" class="max-h-60 overflow-y-auto divide-y divide-slate-100 border rounded-lg custom-scrollbar"></div>
 
             <div class="flex justify-end gap-2 pt-2 border-t">
                 <button onclick="closeCourseModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded-lg font-semibold">취소</button>
@@ -314,7 +323,6 @@
         let activeTargetIndex = null;
         let activeModalTab = 'primary';
 
-        // 🔥 공유받은 데이터를 불러오거나 내 로컬 데이터를 불러오는 함수
         function initApp() {
             applyUnivConfigUI();
             populateAdmissionYears();
@@ -329,7 +337,6 @@
             const urlParams = new URLSearchParams(window.location.search);
             const sharedData = urlParams.get('d') || urlParams.get('data');
             
-            // 기존 작업 중인 로컬 데이터 확인
             const existingDataRaw = localStorage.getItem('hanyang_academic_data_hycu_v16');
             let hasExistingWork = false;
             if (existingDataRaw && existingDataRaw.length > 50) {
@@ -342,7 +349,6 @@
             }
         
             if (sharedData) {
-                // 🔥 기존 데이터가 있을 때 덮어쓰기 여부 확인
                 let shouldOverwrite = true;
                 if (hasExistingWork) {
                     shouldOverwrite = confirm("📥 공유된 링크로 접속하셨습니다.\n현재 브라우저에 작업 중이던 기존 데이터가 있습니다. 공유받은 내용으로 덮어쓰시겠습니까?\n(취소를 누르면 내 기존 데이터를 유지합니다.)");
@@ -381,11 +387,9 @@
                         loadLocalData();
                     }
                 } else {
-                    // 취소 누른 경우 내 로컬 데이터 유지
                     loadLocalData();
                 }
                 
-                // 주소창 파라미터 지워서 새로고침 시 무한 덮어쓰기 방지
                 window.history.replaceState({}, document.title, window.location.pathname);
 
             } else {
@@ -435,7 +439,6 @@
             document.getElementById('minorMajorSelect').value = profile.minor;
         }
 
-        // 🔥 명시적 저장 버튼 (심리적 안정감 + 인앱 브라우저 경고)
         function manualSave() {
             saveAndRecalculateSilent();
             alert("✅ 브라우저(현재 기기)에 임시 저장이 완료되었습니다!\n\n※ 주의: 카카오톡 등 '앱 내 브라우저'나 '시크릿 모드'에서는 나중에 창을 닫으면 데이터가 날아갈 수 있습니다.\n확실한 보관을 원하시면 [계획 공유] 버튼을 눌러 생성된 링크를 카톡 '내게 쓰기' 등에 남겨주세요.");
