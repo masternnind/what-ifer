@@ -30,8 +30,12 @@
                 <p class="text-blue-200 text-sm mt-1">입학 구분별 인정학점 차감 및 전공/교양 필수 요건 자동 판정 시스템</p>
             </div>
             <div class="flex gap-2">
+                <!-- 상단 헤더 버튼 영역에 추가 -->
+                <button onclick="copyShareLink()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-xs font-semibold transition flex items-center gap-1">
+                    <i class="fa-solid fa-share-nodes"></i> 계획 공유
+                </button>
                 <button onclick="resetToDefault()" class="px-3 py-2 bg-blue-800 hover:bg-blue-700 rounded text-xs transition flex items-center gap-1">
-                    <i class="fa-solid fa-rotate-right"></i> 전체 데이터 초기화
+                    <i class="fa-solid fa-rotate-right"></i> 데이터 초기화
                 </button>
                 <button onclick="window.print()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 rounded text-xs font-semibold transition flex items-center gap-1">
                     <i class="fa-solid fa-file-pdf"></i> 리포트 인쇄/PDF
@@ -378,12 +382,45 @@
 
         function initApp() {
             applyUnivConfigUI();
-            const savedData = localStorage.getItem('hanyang_academic_data_hycu_v15');
-            if (savedData) {
-                try { courses = JSON.parse(savedData); } catch (e) { courses = []; }
+        
+            // URL에 'data' 파라미터가 있는지 확인 (공유받은 링크로 들어온 경우)
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedData = urlParams.get('data');
+        
+            if (sharedData) {
+                // 공유 링크로 접속한 경우: 암호화된 데이터를 풀어서 적용
+                try {
+                    const decodedStr = decodeURIComponent(atob(sharedData));
+                    courses = JSON.parse(decodedStr);
+                    // 불러온 데이터를 내 로컬 스토리지에도 덮어쓰기 저장
+                    localStorage.setItem('hanyang_academic_data_hycu_v15', decodedStr);
+                    
+                    // 지저분한 URL 파라미터를 깔끔하게 지워줌
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    
+                    alert("📥 공유받은 로드맵 데이터를 성공적으로 불러왔습니다!");
+                } catch (e) {
+                    alert("❌ 공유 링크가 손상되었거나 유효하지 않습니다. 기존 데이터를 불러옵니다.");
+                    loadLocalData();
+                }
+            } else {
+                // 일반 접속인 경우: 내 컴퓨터(로컬 스토리지)에 저장된 데이터 불러오기
+                loadLocalData();
             }
+        
             populateAdmissionYears();
             onAdmissionTypeChange();
+        }
+
+        function loadLocalData() {
+            const savedData = localStorage.getItem('hanyang_academic_data_hycu_v15');
+            if (savedData) {
+                try { 
+                    courses = JSON.parse(savedData); 
+                } catch (e) { 
+                    courses = []; 
+                }
+            }
         }
 
         function populateAdmissionYears() {
@@ -925,7 +962,7 @@
             localStorage.setItem('hanyang_academic_data_hycu_v15', JSON.stringify(courses));
             calculateAll();
         }
-
+        
         function calculateAll() {
             let validCourses = [];
             semesterTabsList.forEach(sem => {
@@ -1158,6 +1195,26 @@
             if (barEl) barEl.style.width = `${pct}%`;
         }
 
+        function copyShareLink() {
+            if (courses.length === 0) {
+                alert("공유할 데이터가 없습니다. 과목을 먼저 추가해주세요.");
+                return;
+            }
+            // 데이터를 문자열로 만들고, 한글 깨짐 방지를 위해 인코딩 후 Base64로 암호화(압축)
+            const dataStr = JSON.stringify(courses);
+            const encodedData = btoa(encodeURIComponent(dataStr));
+            
+            // 현재 주소 뒤에 ?data=암호화된문자열 형태로 URL 생성
+            const shareUrl = window.location.origin + window.location.pathname + "?data=" + encodedData;
+        
+            // 클립보드에 복사
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert("✅ 현재 데이터가 포함된 링크가 복사되었습니다!\n카톡이나 메신저로 친구에게 공유해보세요.");
+            }).catch(err => {
+                alert("복사에 실패했습니다. 브라우저 설정을 확인해주세요.");
+            });
+        }
+        
         window.onload = initApp;
     </script>
 </body>
