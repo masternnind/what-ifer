@@ -157,19 +157,18 @@
 
                 <div id="statusAlertBanner" class="hidden"></div>
 
-                <!-- 🔥 가독성 개선: 테이블 최소 너비를 750px로 늘리고 각 열의 아웃라인 박스 너비 확대 -->
+                <!-- 🔥 과목명 너비 축소를 위해 테이블 최소 너비를 600px로 변경 -->
                 <div class="overflow-x-auto pb-4 custom-scrollbar">
-                    <table class="w-full text-left text-xs table-fixed min-w-[750px]">
+                    <table class="w-full text-left text-xs table-fixed]">
                         <thead class="bg-slate-100 text-slate-700 uppercase whitespace-nowrap text-center">
                             <tr>
-                                <!-- 과목명 너비 대폭 확보 -->
-                                <th class="p-2 border-b text-left w-auto min-w-[100px]">과목명</th>
-                                <th class="p-2 border-b w-24">구분</th> 
-                                <th class="p-2 border-b w-20">학점</th> 
-                                <th class="p-2 border-b w-28">백분율</th> 
-                                <th class="p-2 border-b w-16">등급</th> 
-                                <th class="p-2 border-b w-16">평점</th> 
-                                <th class="p-2 border-b w-12 no-print">초기화</th>
+                                <th class="p-2 border-b w-50 text-left align-middle">과목명</th>
+                                <th class="p-2 border-b w-20 text-center align-middle">구분</th> 
+                                <th class="p-2 border-b w-12 text-center align-middle">학점</th> 
+                                <th class="p-2 border-b w-16 text-center align-middle">백분율</th> 
+                                <th class="p-2 border-b w-12 text-center align-middle">등급</th> 
+                                <th class="p-2 border-b w-10 text-center align-middle">평점</th> 
+                                <th class="p-2 border-b w-12 text-center align-middle no-print">초기화</th>
                             </tr>
                         </thead>
                         <tbody id="courseTableBody" class="divide-y divide-slate-100"></tbody>
@@ -210,7 +209,7 @@
 
                 <!-- PC 영역: QR 코드 (아웃라인 제거, 새 이미지 적용) -->
                 <div class="shrink-0 hidden sm:block">
-                    <!-- 🔥 이미지 경로를 don/kakaopay.jpg 로 수정했습니다 -->
+                    <!-- 🔥 이미지 경로를 don/kakaopay.jpg 로 유지합니다 -->
                     <img src="don/kakaopay.jpg" alt="카카오페이 QR" class="w-20 h-20 sm:w-24 sm:h-24 object-contain">
                 </div>
 
@@ -372,7 +371,7 @@
                 <option value="similar">유사전공 계열</option>
                 <option value="other">기타전공 (타계열)</option>
             `;
-        
+            
             const urlParams = new URLSearchParams(window.location.search);
             const sharedData = urlParams.get('d') || urlParams.get('data');
             
@@ -386,7 +385,7 @@
                     }
                 } catch(e){}
             }
-        
+            
             if (sharedData) {
                 let shouldOverwrite = true;
                 if (hasExistingWork) {
@@ -434,7 +433,7 @@
             } else {
                 loadLocalData();
             }
-        
+            
             onAdmissionTypeChange();
         }
 
@@ -898,15 +897,16 @@
                 const tr = document.createElement('tr');
                 tr.className = `border-b border-slate-100 ${isDisabledRow ? 'bg-slate-100 opacity-50' : 'hover:bg-slate-50'}`;
                 
+                // 줄바꿈과 여백을 제거하여 완벽한 중앙 정렬 강제 적용
                 tr.innerHTML = `
-                    <td class="p-1.5">
+                    <td class="p-1.5 align-middle">
                         <input type="text" readonly value="${c.name || ''}" placeholder="${isDisabledRow ? '입력 제한' : '클릭하여 과목 검색'}" 
                                ${isDisabledRow ? 'disabled' : ''}
                                onclick="openCourseModal(${realIdx})" 
                                class="w-full border rounded p-1.5 text-xs font-medium focus:ring-2 focus:ring-blue-500 cursor-pointer bg-white disabled:bg-slate-200 truncate">
                     </td>
-                    <td class="p-1.5 text-center whitespace-nowrap">
-                        <span class="px-2 py-1 rounded text-xs font-bold block ${
+                    <td class="p-1.5 text-center align-middle whitespace-nowrap">
+                        <span class="w-16 py-1 rounded text-xs font-bold inline-block text-center ${
                             c.track === '전공' ? 'bg-emerald-100 text-emerald-800' :
                             c.track === '교양' ? 'bg-amber-100 text-amber-800' :
                             c.track === '복수전공' ? 'bg-indigo-100 text-indigo-800' :
@@ -914,30 +914,23 @@
                             c.track === '공통' ? 'bg-teal-100 text-teal-800' :
                             c.track === '일반' ? 'bg-cyan-100 text-cyan-800' :
                             'bg-slate-100 text-slate-600'
-                        }">
-                            ${c.track || '-'}
-                        </span>
+                        }">${c.track || '-'}</span>
                     </td>
-                    <td class="p-1.5 text-center font-bold text-slate-700 whitespace-nowrap">
-                        ${c.name ? c.credits : '-'}
-                    </td>
-                    <td class="p-1.5 text-center">
+                    <td class="p-1.5 text-center align-middle font-bold text-slate-700 whitespace-nowrap">${c.name ? c.credits : '-'}</td>
+                    <td class="p-1.5 text-center align-middle">
                         <input type="number" step="0.01" 
                                value="${c.score !== null && c.score !== undefined ? Number(c.score).toFixed(2) : ''}" 
                                placeholder="00.00" 
                                ${isDisabledRow || !c.name ? 'disabled' : ''}
                                oninput="onScoreInput(${realIdx}, this.value, this)" 
                                onblur="this.value = this.value ? Number(this.value).toFixed(2) : ''"
-                               class="w-full border rounded p-1 text-xs text-center font-bold text-slate-700 bg-white focus:ring-2 focus:ring-blue-400 disabled:bg-slate-200">
+                               onkeydown="if(event.key === 'Enter') this.blur();"
+                               class="w-full border rounded py-1.5 px-0 text-xs text-center font-bold text-slate-700 bg-white focus:ring-2 focus:ring-blue-400 disabled:bg-slate-200">
                     </td>
-                    <td class="p-1.5 text-center font-bold text-slate-600 text-xs whitespace-nowrap" id="grade-label-${realIdx}">
-                        ${evalGrade.grade}
-                    </td>
-                    <td class="p-1.5 text-center font-bold text-blue-600 text-xs whitespace-nowrap" id="gpa-label-${realIdx}">
-                        ${evalGrade.gpa !== null ? evalGrade.gpa.toFixed(1) : '-'}
-                    </td>
-                    <td class="p-1.5 text-center no-print">
-                        <button onclick="clearRow(${realIdx})" ${isDisabledRow ? 'disabled' : ''} class="text-slate-400 hover:text-red-500 px-1 disabled:text-slate-300"><i class="fa-solid fa-rotate-left"></i></button>
+                    <td class="p-1.5 text-center align-middle font-bold text-slate-600 text-xs whitespace-nowrap" id="grade-label-${realIdx}">${evalGrade.grade}</td>
+                    <td class="p-1.5 text-center align-middle font-bold text-blue-600 text-xs whitespace-nowrap" id="gpa-label-${realIdx}">${evalGrade.gpa !== null ? evalGrade.gpa.toFixed(1) : '-'}</td>
+                    <td class="p-1.5 text-center align-middle no-print">
+                        <button onclick="clearRow(${realIdx})" ${isDisabledRow ? 'disabled' : ''} class="text-slate-400 hover:text-red-500 px-1 disabled:text-slate-300 flex items-center justify-center w-full"><i class="fa-solid fa-rotate-left"></i></button>
                     </td>
                 `;
 
