@@ -171,6 +171,7 @@
         <!-- 우측: 요약 및 진단 영역 -->
         <section class="lg:col-span-5 space-y-6">
             
+            <!-- 1. GPA 요약 박스 -->
             <div class="bg-gradient-to-br from-blue-900 to-indigo-900 text-white rounded-xl p-6 shadow-md">
                 <h3 class="text-xs uppercase tracking-wider text-blue-200 font-semibold mb-4">현재 본교 취득 학점 및 평점 (GPA)</h3>
                 <div class="grid grid-cols-3 gap-2 text-center">
@@ -189,6 +190,27 @@
                 </div>
             </div>
 
+            <!-- 2. ☕ 다이렉트 후원 위젯 (GPA 박스 바로 아래로 이동 완료) -->
+            <div class="bg-gradient-to-r from-[#FFFAEE] to-[#FFF5D6] rounded-xl shadow-sm border border-[#FDE08B] p-5 flex flex-col sm:flex-row items-center justify-between gap-4 no-print transition-all hover:shadow-md">
+                <div class="text-center sm:text-left w-full sm:w-auto">
+                    <div class="inline-block bg-[#FEE500] text-[#371D1E] text-[10px] font-black px-2.5 py-0.5 rounded-full mb-1.5 shadow-sm">SPONSOR</div>
+                    <h3 class="text-[15px] font-black text-slate-800 tracking-tight">개발자에게 커피 한 잔 ☕</h3>
+                    <p class="text-[11px] text-slate-600 mt-1 leading-snug font-medium">로드맵이 유용하셨나요?<br class="hidden sm:block">100원의 후원이 업데이트에 큰 힘이 됩니다!</p>
+                </div>
+
+                <!-- 모바일 전용: 카카오페이 딥링크 -->
+                <a href="https://qr.kakaopay.com/FRZOwT8OZ3204989" target="_blank" class="block sm:hidden w-full text-center bg-[#FEE500] hover:bg-[#FADA0A] active:bg-[#E5C30A] text-[#191919] font-black px-4 py-3.5 rounded-xl text-sm transition shadow-sm shrink-0 flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-comment text-[#371D1E]"></i> 카카오페이로 100원 후원하기
+                </a>
+
+                <!-- PC 전용: 스캔용 QR 코드 (인식률 향상을 위한 여백 확보 및 크기 최적화) -->
+                <div class="hidden sm:flex shrink-0 flex-col items-center bg-white p-2.5 rounded-xl border border-[#FDE08B] shadow-sm">
+                    <img src="don/kakaopay.jpg" alt="카카오페이 QR" class="w-28 h-28 object-contain rounded-md" title="스마트폰 카메라로 스캔해주세요">
+                    <span class="text-[10px] font-bold text-slate-500 mt-1.5 tracking-tighter">카메라로 스캔해주세요</span>
+                </div>
+            </div>
+
+            <!-- 3. 졸업 자격 정밀 진단 (누락되었던 부분 복구) -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                 <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                     <i class="fa-solid fa-award text-amber-500"></i> 졸업 자격 정밀 진단
@@ -196,6 +218,7 @@
                 <div id="graduationStatusBox" class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs space-y-3"></div>
             </div>
 
+            <!-- 4. 졸업 기준 학점 충족도 (누락되었던 이중 프로그레스 바 복구) -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                 <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2 border-b pb-2">
                     <i class="fa-solid fa-chart-pie text-blue-600"></i> 졸업 기준 학점 충족도
@@ -269,29 +292,12 @@
                 </div>
             </div>
 
+            <!-- 5. 연계 학기별 한도 검토 -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                 <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                     <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> 연계 학기별 한도(24학점) 검토
                 </h3>
                 <ul id="semesterValidationList" class="space-y-1 text-xs text-slate-600"></ul>
-            </div>
-
-            <!-- ☕ 다이렉트 후원 위젯 (반응형: 모바일은 링크, PC/태블릿은 큰 QR) -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 no-print">
-                <div class="text-center sm:text-left w-full sm:w-auto">
-                    <h3 class="text-[14px] font-black text-slate-800">개발자에게 커피 한 모금 ☕</h3>
-                    <p class="text-[11px] text-slate-500 mt-1">유용하게 사용하셨다면 100원의 후원이 큰 힘이 됩니다!</p>
-                </div>
-
-                <!-- 모바일 전용: 송금 링크 버튼 (PC에서는 숨김) -->
-                <a href="https://qr.kakaopay.com/FRZOwT8OZ3204989" target="_blank" class="block sm:hidden w-full text-center bg-[#FEE500] hover:bg-[#FADA0A] text-[#191919] font-black px-4 py-3 rounded-xl text-sm transition shadow-sm shrink-0">
-                    <i class="fa-solid fa-comment text-[#371D1E] mr-1"></i> 카카오페이 100원 송금
-                </a>
-
-                <!-- PC/태블릿 전용: 스캔하기 좋은 큰 QR 이미지 (모바일에서는 숨김) -->
-                <div class="hidden sm:block shrink-0">
-                    <img src="don/kakaopay.jpg" alt="카카오페이 QR" class="w-36 h-36 object-contain rounded-xl border border-slate-100 shadow-sm p-1.5 bg-white" title="스마트폰 카메라로 스캔하세요">
-                </div>
             </div>
 
         </section>
