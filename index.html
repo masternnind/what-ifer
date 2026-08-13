@@ -1099,7 +1099,14 @@
         }
 
         function onScoreInput(idx, val, inputEl) {
-            const numVal = val !== '' ? parseFloat(val) : null;
+            let numVal = val !== '' ? parseFloat(val) : null;
+
+            // 100을 초과하는 점수 입력 방지 로직 추가
+            if (numVal !== null && numVal > 100) {
+                numVal = 100;
+                inputEl.value = '100';
+            }
+
             courses[idx].score = numVal;
 
             const evalGrade = getGradeFromScore(numVal);
