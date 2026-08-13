@@ -147,18 +147,18 @@
 
                 <div id="statusAlertBanner" class="hidden"></div>
 
-                <!-- 🔥 가독성 개선: 모바일에서 표가 찌그러지지 않고 좌우 스크롤 되도록 min-w-[650px] 적용 -->
+                <!-- 🔥 가독성 개선: 테이블 최소 너비를 750px로 늘리고 각 열의 아웃라인 박스 너비 확대 -->
                 <div class="overflow-x-auto pb-4 custom-scrollbar">
-                    <table class="w-full text-left text-xs table-fixed min-w-[650px]">
+                    <table class="w-full text-left text-xs table-fixed min-w-[750px]">
                         <thead class="bg-slate-100 text-slate-700 uppercase whitespace-nowrap text-center">
                             <tr>
                                 <!-- 과목명 너비 대폭 확보 -->
                                 <th class="p-2 border-b text-left w-auto min-w-[200px]">과목명</th>
-                                <th class="p-2 border-b w-20">구분</th>
-                                <th class="p-2 border-b w-16">학점</th>
-                                <th class="p-2 border-b w-24">점수(백분율)</th>
-                                <th class="p-2 border-b w-16">등급</th>
-                                <th class="p-2 border-b w-16">평점</th>
+                                <th class="p-2 border-b w-28">구분</th> 
+                                <th class="p-2 border-b w-20">학점</th> 
+                                <th class="p-2 border-b w-28">백분율</th> 
+                                <th class="p-2 border-b w-20">등급</th> 
+                                <th class="p-2 border-b w-20">평점</th> 
                                 <th class="p-2 border-b w-12 no-print">초기화</th>
                             </tr>
                         </thead>
@@ -192,10 +192,10 @@
             <!-- 💖 다이렉트 후원 위젯 (컴팩트 & 노아웃라인 버전) -->
             <div class="bg-amber-50 rounded-xl shadow-sm border border-amber-200 p-4 flex items-center justify-between gap-3 no-print">
                 <div class="flex-1 text-left">
-                    <h3 class="text-sm sm:text-base font-black text-amber-900">개발자 김영재에게 커피 ☕</h3>
-                    <p class="text-[11px] sm:text-xs text-amber-700 mt-0.5">100원 후원이 업데이트에 큰 힘이 됩니다!</p>
+                    <h3 class="text-sm sm:text-base font-black text-amber-900">💯 올 A+ 기원! 전설의 100원 부적</h3>
+                    <p class="text-[11px] sm:text-xs text-amber-700 mt-0.5">졸업을 위한 가성비 최강 액뜸 비용 100원!<br>후원하고 성공적인 로드맵으로 100점 맞기!</p>
                     <!-- PC 전용 지시 문구 -->
-                    <p class="text-xs font-black text-amber-600 mt-2 hidden sm:block">QR 찍고 후원하기 --------&gt;</p>
+                    <p class="text-xs font-black text-amber-600 mt-2 hidden sm:block">QR 찍고 후원하기 ---------------&gt;</p>
                 </div>
 
                 <!-- PC 영역: QR 코드 (아웃라인 제거, 새 이미지 적용) -->
@@ -300,6 +300,12 @@
 
         </section>
     </main>
+
+    <!-- 하단 저작권 (Footer) -->
+    <footer class="max-w-7xl mx-auto px-4 py-8 mt-4 text-center text-slate-400 text-xs no-print">
+        <p class="font-bold text-slate-500 mb-1">© 2026 김영재. All rights reserved.</p>
+        <p class="text-[10px]">본 시스템의 UI/UX 디자인, 산출 로직 및 소스 코드에 대한 무단 복제, 배포, 수정을 엄격히 금지합니다.</p>
+    </footer>
 
     <!-- 과목 선택 모달 -->
     <div id="courseModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
@@ -560,7 +566,7 @@
         }
 
         function getGradeFromScore(score) {
-            if (score === null || score === undefined || isNaN(score) || score === '') return { grade: '미입력', gpa: null };
+            if (score === null || score === undefined || isNaN(score) || score === '') return { grade: '-', gpa: null };
             const val = parseFloat(score);
             const maxVal = ACTIVE_CONFIG.maxGpa || 4.5;
             
@@ -717,7 +723,7 @@
             if (existingCount < targetSlotCount) {
                 const needed = targetSlotCount - existingCount;
                 for (let i = 0; i < needed; i++) {
-                    courses.push({ semKey: semKey, name: '', track: '미지정', credits: 3, score: null });
+                    courses.push({ semKey: semKey, name: '', track: '-', credits: 3, score: null });
                 }
             }
         }
@@ -899,16 +905,20 @@
                             c.track === '일반' ? 'bg-cyan-100 text-cyan-800' :
                             'bg-slate-100 text-slate-600'
                         }">
-                            ${c.track || '미지정'}
+                            ${c.track || '-'}
                         </span>
                     </td>
                     <td class="p-1.5 text-center font-bold text-slate-700 whitespace-nowrap">
                         ${c.name ? c.credits + '학점' : '-'}
                     </td>
                     <td class="p-1.5 text-center">
-                        <input type="number" step="0.01" value="${c.score !== null && c.score !== undefined ? c.score : ''}" placeholder="0~100" 
+                        <!-- 🔥 소수점 둘째 자리 고정 (.toFixed(2)) 및 입력 후 빠져나갈 때 자동 포맷팅(onblur) 추가 -->
+                        <input type="number" step="0.01" 
+                               value="${c.score !== null && c.score !== undefined ? Number(c.score).toFixed(2) : ''}" 
+                               placeholder="00.00" 
                                ${isDisabledRow || !c.name ? 'disabled' : ''}
                                oninput="onScoreInput(${realIdx}, this.value, this)" 
+                               onblur="this.value = this.value ? Number(this.value).toFixed(2) : ''"
                                class="w-full border rounded p-1 text-xs text-center font-bold text-slate-700 bg-white focus:ring-2 focus:ring-blue-400 disabled:bg-slate-200">
                     </td>
                     <td class="p-1.5 text-center font-bold text-slate-600 text-xs whitespace-nowrap" id="grade-label-${realIdx}">
@@ -1081,7 +1091,7 @@
             courses[idx].name = '';
             courses[idx].score = null;
             courses[idx].credits = 3;
-            courses[idx].track = '미지정';
+            courses[idx].track = '-';
             renderTable();
             saveAndRecalculateSilent();
         }
