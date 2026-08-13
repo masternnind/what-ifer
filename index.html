@@ -898,7 +898,7 @@
                 tr.className = `border-b border-slate-100 ${isDisabledRow ? 'bg-slate-100 opacity-50' : 'hover:bg-slate-50'}`;
                 
                 // 줄바꿈과 여백을 제거하여 완벽한 중앙 정렬 강제 적용
-                tr.innerHTML = `
+                 tr.innerHTML = `
                     <td class="p-1.5 align-middle">
                         <input type="text" readonly value="${c.name || ''}" placeholder="${isDisabledRow ? '입력 제한' : '클릭하여 과목 검색'}" 
                                ${isDisabledRow ? 'disabled' : ''}
@@ -918,7 +918,7 @@
                     </td>
                     <td class="p-1.5 text-center align-middle font-bold text-slate-700 whitespace-nowrap">${c.name ? c.credits : '-'}</td>
                     <td class="p-1.5 text-center align-middle">
-                        <input type="number" step="0.01" 
+                        <input type="number" step="0.01" max="100"
                                value="${c.score !== null && c.score !== undefined ? Number(c.score).toFixed(2) : ''}" 
                                placeholder="00.00" 
                                ${isDisabledRow || !c.name ? 'disabled' : ''}
