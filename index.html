@@ -157,18 +157,18 @@
 
                 <div id="statusAlertBanner" class="hidden"></div>
 
-                <!-- 🔥 과목명 너비 축소를 위해 테이블 최소 너비를 600px로 변경 -->
+                <!-- 🔥 모바일 최적화: 최소 너비를 600px로 보장하여 과목명이 찌그러지지 않고 자연스럽게 가로 스크롤되도록 수정 -->
                 <div class="overflow-x-auto pb-4 custom-scrollbar">
-                    <table class="w-full text-left text-xs table-fixed]">
+                    <table class="w-full text-left text-xs table-fixed min-w-[400px]">
                         <thead class="bg-slate-100 text-slate-700 uppercase whitespace-nowrap text-center">
                             <tr>
-                                <th class="p-2 border-b w-50 text-left align-middle">과목명</th>
+                                <th class="p-2 border-b text-left align-middle">과목명</th>
                                 <th class="p-2 border-b w-20 text-center align-middle">구분</th> 
                                 <th class="p-2 border-b w-12 text-center align-middle">학점</th> 
                                 <th class="p-2 border-b w-16 text-center align-middle">백분율</th> 
                                 <th class="p-2 border-b w-12 text-center align-middle">등급</th> 
-                                <th class="p-2 border-b w-10 text-center align-middle">평점</th> 
-                                <th class="p-2 border-b w-12 text-center align-middle no-print">초기화</th>
+                                <th class="p-2 border-b w-12 text-center align-middle">평점</th> 
+                                <th class="p-2 border-b w-10 text-center align-middle no-print">초기화</th>
                             </tr>
                         </thead>
                         <tbody id="courseTableBody" class="divide-y divide-slate-100"></tbody>
@@ -185,7 +185,7 @@
                 <div class="grid grid-cols-3 gap-2 text-center">
                     <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
                         <span class="block text-2xl font-black text-white" id="statGpa">0.00</span>
-                        <span class="text-[10px] text-blue-200" id="statGpaMaxLabel">평균 평점 (/ 4.5)</span>
+                        <span class="text-[10px] text-blue-200" id="statGpaMaxLabel">평균 평점 (4.5 만점)</span>
                     </div>
                     <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
                         <span class="block text-2xl font-black text-amber-300" id="statScore">0.0</span>
@@ -898,7 +898,7 @@
                 tr.className = `border-b border-slate-100 ${isDisabledRow ? 'bg-slate-100 opacity-50' : 'hover:bg-slate-50'}`;
                 
                 // 줄바꿈과 여백을 제거하여 완벽한 중앙 정렬 강제 적용
-                 tr.innerHTML = `
+                tr.innerHTML = `
                     <td class="p-1.5 align-middle">
                         <input type="text" readonly value="${c.name || ''}" placeholder="${isDisabledRow ? '입력 제한' : '클릭하여 과목 검색'}" 
                                ${isDisabledRow ? 'disabled' : ''}
