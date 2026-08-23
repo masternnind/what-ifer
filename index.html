@@ -63,14 +63,14 @@
                 <p class="text-blue-200 text-sm mt-1">입학 구분별 인정학점 차감 및 전공/교양 필수 요건 자동 판정 시스템</p>
             </div>
             <div class="flex flex-wrap justify-end gap-2">
+                <button onclick="openGuideModal()" class="px-3 py-2 bg-sky-600 hover:bg-sky-500 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-circle-question"></i> 사용법 안내
+                </button>
                 <button onclick="manualSave()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
                     <i class="fa-solid fa-floppy-disk"></i> 브라우저 저장
                 </button>
                 <button onclick="copyShareLink()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
-                    <i class="fa-solid fa-share-nodes"></i> 진행상황 공유
-                </button>
-                <button onclick="window.print()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
-                    <i class="fa-solid fa-file-pdf"></i> PDF 인쇄
+                    <i class="fa-solid fa-share-nodes"></i> 내 계획 공유
                 </button>
                 <button onclick="resetToDefault()" class="px-3 py-2 bg-rose-700 hover:bg-rose-600 rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
                     <i class="fa-solid fa-rotate-right"></i> 초기화
@@ -327,6 +327,56 @@
         <p class="font-bold text-slate-500 mb-1">© 2026 김영재. All rights reserved.</p>
         <p class="text-[10px]">본 시스템의 UI/UX 디자인, 산출 로직 및 소스 코드에 대한 무단 복제, 배포, 수정을 엄격히 금지합니다.</p>
     </footer>
+
+     <!-- 사이트 이용 가이드 모달 -->
+    <div id="guideModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print" onclick="if(event.target === this) closeGuideModal()">
+        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 mx-4 space-y-4 max-h-[85vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-circle-question text-blue-600"></i> <span>사이트 이용 가이드</span>
+                </h3>
+                <button onclick="closeGuideModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+            </div>
+            <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+                <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                    <p class="font-bold text-blue-900 mb-1">📌 1. 학적 및 전공 설정</p>
+                    <p>입학년도, 신/편입 구분, 주전공 및 다전공을 선택하세요. 편입생의 경우 전적대 인정학점이 자동으로 차감 정산됩니다.</p>
+                </div>
+                <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-100">
+                    <p class="font-bold text-emerald-900 mb-1">📌 2. 학기별 수강 과목 입력</p>
+                    <p>학년/학기 탭을 이동하며 과목 칸을 클릭해 개설 과목을 검색·추가하고 100점 환산 백분율 점수를 입력하세요.</p>
+                </div>
+                <div class="p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+                    <p class="font-bold text-indigo-900 mb-1">📌 3. 졸업 요건 및 학점 한도 자동 판정</p>
+                    <p>우측 영역에서 GPA, 졸업 이수학점 충족 여부, 학기별 24학점 초과 이수 제한을 실시간으로 확인하세요.</p>
+                </div>
+                <div class="p-3 bg-amber-50 rounded-lg border border-amber-100">
+                    <p class="font-bold text-amber-900 mb-2">📌 4. [브라우저 저장] vs [진행상황 공유] 차이점 안내</p>
+                    <div class="space-y-2">
+                        <div class="bg-white p-2.5 rounded-lg border border-amber-200 shadow-sm">
+                            <div class="font-bold text-emerald-700 flex items-center gap-1.5 mb-1 text-xs">
+                                <i class="fa-solid fa-floppy-disk"></i> 브라우저 저장 (현재 기기 임시 보관)
+                            </div>
+                            <p class="text-[11px] text-slate-600 leading-relaxed">
+                                현재 사용 중인 <strong>스마트폰/PC의 브라우저에만</strong> 작성 내용을 저장합니다. 창을 닫았다가 다시 열어도 유지되지만, <u>카카오톡 인앱 브라우저·시크릿 모드·쿠키 삭제 시 작성 내용이 날아갈 수 있습니다.</u>
+                            </p>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-lg border border-amber-200 shadow-sm">
+                            <div class="font-bold text-indigo-700 flex items-center gap-1.5 mb-1 text-xs">
+                                <i class="fa-solid fa-share-nodes"></i> 진행상황 공유 (영구 보관 및 다른 기기 이동)
+                            </div>
+                            <p class="text-[11px] text-slate-600 leading-relaxed">
+                                현재 작성된 모든 데이터를 압축한 <strong>고유 URL 링크</strong>를 만듭니다. 이 링크를 복사하여 <u>'카톡 나에게 보내기'나 메모장에 저장해두면</u>, 기기가 바뀌거나 캐시가 지워져도 언제든 링크 접속 한 번으로 100% 복구할 수 있어 가장 안전합니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end pt-2 border-t">
+                <button onclick="closeGuideModal()" class="px-4 py-2 bg-blue-900 text-white hover:bg-blue-800 text-xs rounded-lg font-semibold">확인했습니다</button>
+            </div>
+        </div>
+    </div>
 
     <!-- 과목 선택 모달 -->
     <div id="courseModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
